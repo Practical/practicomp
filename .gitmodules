@@ -1,0 +1,4 @@
+[submodule "external/practical-sa"]
+	path = external/practical-sa
+	url = git@github.com:Practical/practical-sa.git
+	branch = master

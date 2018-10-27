@@ -1,0 +1,3 @@
+SUBDIRS=external compiler
+
+.PHONY:
