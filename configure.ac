@@ -8,6 +8,8 @@ AC_CONFIG_SUBDIRS([external/practical-sa])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 LT_INIT
 
+m4_include([m4/ax_cxx_compile_stdcxx.m4])
+
 AC_LANG(C++)
 # Checks for programs.
 AC_PROG_CXX
@@ -26,6 +28,7 @@ PKG_PROG_PKG_CONFIG
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
+AX_CXX_COMPILE_STDCXX(17, [noext], [mandatory])
 
 # Checks for library functions.
 
