@@ -10,6 +10,8 @@ LT_INIT
 
 m4_include([m4/ax_cxx_compile_stdcxx.m4])
 
+LLVM_VERSION=7
+
 AC_LANG(C++)
 # Checks for programs.
 AC_PROG_CXX
@@ -21,8 +23,13 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_MKDIR_P
 PKG_PROG_PKG_CONFIG
+AC_CHECK_PROG(LLVM_CONFIG, [llvm-config-$LLVM_VERSION], [yes], [no])
+test "yes" == "$LLVM_CONFIG" || AC_MSG_ERROR([Couldn't find llvm-config-$LLVM_VERSION: is LLVM installed?])
 
 # Checks for libraries.
+AC_SUBST([LLVM_CXXFLAGS], `llvm-config-$LLVM_VERSION --cxxflags`)
+AC_SUBST([LLVM_LDFLAGS], `llvm-config-$LLVM_VERSION --ldflags`)
+AC_SUBST([LLVM_LIBS], `llvm-config-$LLVM_VERSION --libs`)
 
 # Checks for header files.
 
