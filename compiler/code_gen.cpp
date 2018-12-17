@@ -2,6 +2,12 @@
 
 #include "utils.h"
 
+FunctionGenImpl::~FunctionGenImpl() {
+    assert(llvmFunction==nullptr);
+    assert(currentBlock==nullptr);
+    assert(builder==nullptr);
+}
+
 void FunctionGenImpl::functionEnter(
         IdentifierId id, String name, StaticType returnType, Slice<VariableDeclaration> arguments,
         String file, size_t line, size_t col)
@@ -10,14 +16,21 @@ void FunctionGenImpl::functionEnter(
 
     std::vector<LLVMTypeRef> argumentTypes;
     LLVMTypeRef retType = LLVMFunctionType( LLVMVoidType() /*toLLVMType(returnType)*/, argumentTypes.data(), argumentTypes.size(), false );
-    LLVMValueRef function = LLVMAddFunction( llvmModule, toStdString(name).c_str(), retType );
+    llvmFunction = LLVMAddFunction( llvmModule, toStdString(name).c_str(), retType );
+    currentBlock = LLVMAppendBasicBlock( llvmFunction, "" );
+
+    builder = LLVMCreateBuilder();
+    LLVMPositionBuilderAtEnd(builder, currentBlock);
 }
 
 void FunctionGenImpl::functionLeave(IdentifierId id)
 {
     auto llvmModule = module->getLLVMModule();
 
-    // TODO implement
+    LLVMDisposeBuilder(builder);
+    builder = nullptr;
+    currentBlock = nullptr;
+    llvmFunction = nullptr;
 }
 
 void ModuleGenImpl::moduleEnter(

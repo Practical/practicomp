@@ -11,10 +11,13 @@ using namespace PracticalSemanticAnalyzer;
 class ModuleGenImpl;
 
 class FunctionGenImpl : public FunctionGen, private NoCopy {
-    ModuleGenImpl *module;
-
+    ModuleGenImpl *module = nullptr;
+    LLVMValueRef llvmFunction = nullptr;
+    LLVMBasicBlockRef currentBlock = nullptr;
+    LLVMBuilderRef builder = nullptr;
 public:
     FunctionGenImpl(ModuleGenImpl *module) : module(module) {}
+    ~FunctionGenImpl();
 
     virtual void functionEnter(
             IdentifierId id, String name, StaticType returnType, Slice<VariableDeclaration> arguments,
