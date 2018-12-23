@@ -6,6 +6,8 @@
 
 #include <llvm-c/Core.h>
 
+#include <unordered_map>
+
 using namespace PracticalSemanticAnalyzer;
 
 class ModuleGenImpl;
@@ -15,6 +17,9 @@ class FunctionGenImpl : public FunctionGen, private NoCopy {
     LLVMValueRef llvmFunction = nullptr;
     LLVMBasicBlockRef currentBlock = nullptr;
     LLVMBuilderRef builder = nullptr;
+
+    std::unordered_map< ExpressionId, LLVMValueRef > expressionValuesTable;
+
 public:
     FunctionGenImpl(ModuleGenImpl *module) : module(module) {}
     ~FunctionGenImpl();
@@ -24,6 +29,13 @@ public:
             String file, size_t line, size_t col) override;
 
     virtual void functionLeave(IdentifierId id) override;
+
+    virtual void returnValue(ExpressionId id) override;
+    virtual void setLiteral(ExpressionId id, LongEnoughInt value) override;
+
+private:
+    LLVMValueRef lookupExpression( ExpressionId id ) const;
+    void addExpression( ExpressionId id, LLVMValueRef value );
 };
 
 class ModuleGenImpl : public ModuleGen, private NoCopy {

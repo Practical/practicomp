@@ -15,7 +15,7 @@ void FunctionGenImpl::functionEnter(
     auto llvmModule = module->getLLVMModule();
 
     std::vector<LLVMTypeRef> argumentTypes;
-    LLVMTypeRef retType = LLVMFunctionType( LLVMVoidType() /*toLLVMType(returnType)*/, argumentTypes.data(), argumentTypes.size(), false );
+    LLVMTypeRef retType = LLVMFunctionType( LLVMInt32Type() /*toLLVMType(returnType)*/, argumentTypes.data(), argumentTypes.size(), false );
     llvmFunction = LLVMAddFunction( llvmModule, toStdString(name).c_str(), retType );
     currentBlock = LLVMAppendBasicBlock( llvmFunction, "" );
 
@@ -31,6 +31,26 @@ void FunctionGenImpl::functionLeave(IdentifierId id)
     builder = nullptr;
     currentBlock = nullptr;
     llvmFunction = nullptr;
+}
+
+void FunctionGenImpl::returnValue(ExpressionId id) {
+    LLVMBuildRet( builder, lookupExpression(id) );
+}
+
+void FunctionGenImpl::setLiteral(ExpressionId id, LongEnoughInt value) {
+    addExpression( id, LLVMConstInt(LLVMInt32Type(), value, true) );
+}
+
+LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
+    auto iter = expressionValuesTable.find(id);
+    assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id
+
+    return iter->second;
+}
+
+void FunctionGenImpl::addExpression( ExpressionId id, LLVMValueRef value ) {
+    assert( expressionValuesTable.find(id)==expressionValuesTable.end() ); // Adding an already existing expression
+    expressionValuesTable[id] = value;
 }
 
 void ModuleGenImpl::moduleEnter(
