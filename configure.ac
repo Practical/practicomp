@@ -2,6 +2,11 @@
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.69])
 AC_INIT([The Practical Programming Language Compiler], [0.0], [shachar@shemesh.biz])
+
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
 AC_CONFIG_SRCDIR([examples/true.pr])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SUBDIRS([external/practical-sa])
@@ -27,7 +32,7 @@ AC_CHECK_PROG(LLVM_CONFIG, [llvm-config-$LLVM_VERSION], [yes], [no])
 test "yes" == "$LLVM_CONFIG" || AC_MSG_ERROR([Couldn't find llvm-config-$LLVM_VERSION: is LLVM installed?])
 
 # Checks for libraries.
-AC_SUBST([LLVM_CXXFLAGS], `llvm-config-$LLVM_VERSION --cxxflags`)
+AC_SUBST([LLVM_CXXFLAGS], [`llvm-config-$LLVM_VERSION --cxxflags | tr ' ' '\n' | grep -v -- ^-std= | tr '\n' ' '`])
 AC_SUBST([LLVM_LDFLAGS], `llvm-config-$LLVM_VERSION --ldflags`)
 AC_SUBST([LLVM_LIBS], `llvm-config-$LLVM_VERSION --libs`)
 
@@ -38,6 +43,15 @@ AC_TYPE_SIZE_T
 AX_CXX_COMPILE_STDCXX(17, [noext], [mandatory])
 
 # Checks for library functions.
+
+AC_DEFINE_UNQUOTED([BUILD_TRIPLET], ["$build"], [Platform triplet on which the compiler was built])
+AC_DEFINE_UNQUOTED([HOST_TRIPLET], ["$host"], [Platform triplet on which the compiler will run])
+AC_DEFINE_UNQUOTED([TARGET_TRIPLET], ["$target"], [Platform triplet for which the compiler will produce code])
+AC_DEFINE_UNQUOTED([TARGET_CPU], ["$target_cpu"], [CPU for which the compiler will produce code])
+AC_DEFINE_UNQUOTED([TARGET_OS], ["$target_os"], [Operating system for which the compiler will produce code])
+
+AC_DEFINE([PRACTICAL_SOURCE_FILE_EXTENSION], [".pr"], [Expected extension for Practical source files])
+AC_DEFINE([OBJECT_FILE_EXTENSION], [".o"], [Output extension of object files])
 
 AC_CONFIG_FILES([Makefile external/Makefile compiler/Makefile])
 AC_OUTPUT

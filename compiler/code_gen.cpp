@@ -2,6 +2,8 @@
 
 #include "utils.h"
 
+#include <llvm-c/Analysis.h>
+
 FunctionGenImpl::~FunctionGenImpl() {
     assert(llvmFunction==nullptr);
     assert(currentBlock==nullptr);
@@ -25,8 +27,6 @@ void FunctionGenImpl::functionEnter(
 
 void FunctionGenImpl::functionLeave(IdentifierId id)
 {
-    auto llvmModule = module->getLLVMModule();
-
     LLVMDisposeBuilder(builder);
     builder = nullptr;
     currentBlock = nullptr;
@@ -66,6 +66,9 @@ void ModuleGenImpl::moduleEnter(
 }
 
 void ModuleGenImpl::moduleLeave(ModuleId id) {
+    char *error = NULL;
+    LLVMVerifyModule(llvmModule, LLVMAbortProcessAction, &error);
+    LLVMDisposeMessage(error);
 }
 
 std::shared_ptr<FunctionGen> ModuleGenImpl::handleFunction( IdentifierId id )
