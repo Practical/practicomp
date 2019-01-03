@@ -22,7 +22,7 @@ class FunctionGenImpl : public FunctionGen, private NoCopy {
 
 public:
     FunctionGenImpl(ModuleGenImpl *module) : module(module) {}
-    ~FunctionGenImpl();
+    virtual ~FunctionGenImpl();
 
     virtual void functionEnter(
             IdentifierId id, String name, StaticType returnType, Slice<VariableDeclaration> arguments,
@@ -42,7 +42,7 @@ class ModuleGenImpl : public ModuleGen, private NoCopy {
     LLVMModuleRef llvmModule = nullptr;
 public:
 
-    ~ModuleGenImpl() {
+    virtual ~ModuleGenImpl() {
         LLVMDisposeModule(llvmModule);
     }
 
