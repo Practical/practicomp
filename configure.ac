@@ -27,6 +27,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_MKDIR_P
+AC_PROG_RANLIB
 PKG_PROG_PKG_CONFIG
 AC_CHECK_PROG(LLVM_CONFIG, [llvm-config-$LLVM_VERSION], [yes], [no])
 test "yes" == "$LLVM_CONFIG" || AC_MSG_ERROR([Couldn't find llvm-config-$LLVM_VERSION: is LLVM installed?])
@@ -37,6 +38,7 @@ AC_SUBST([LLVM_LDFLAGS], `llvm-config-$LLVM_VERSION --ldflags`)
 AC_SUBST([LLVM_LIBS], `llvm-config-$LLVM_VERSION --libs`)
 
 # Checks for header files.
+AC_CHECK_HEADER_STDBOOL
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
