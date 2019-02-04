@@ -23,9 +23,15 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    int ret = compile(argv[1], arguments.get(), &codeGen);
-    if( ret!=0 )
-        return ret;
+    try {
+        int ret = compile(argv[1], arguments.get(), &codeGen);
+        if( ret!=0 )
+            return ret;
+    } catch(const compile_error &err) {
+        std::cerr<<inputFilePath.c_str()<<":"<<err.getLine()<<":"<<err.getCol()<<": error: "<<err.what()<<"\n";
+
+        return 1;
+    }
 
     codeGen.dump();
 
@@ -33,5 +39,5 @@ int main(int argc, char *argv[]) {
     outputFileName.replace_extension(".o");
 
     ObjectOutput output(outputFileName, TARGET_TRIPLET, codeGen);
-    return ret;
+    return 0;
 }
