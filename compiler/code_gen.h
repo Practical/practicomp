@@ -25,13 +25,13 @@ public:
     virtual ~FunctionGenImpl();
 
     virtual void functionEnter(
-            IdentifierId id, String name, StaticType returnType, Slice<VariableDeclaration> arguments,
+            IdentifierId id, String name, const StaticType &returnType, Slice<VariableDeclaration> arguments,
             String file, size_t line, size_t col) override;
 
     virtual void functionLeave(IdentifierId id) override;
 
     virtual void returnValue(ExpressionId id) override;
-    virtual void setLiteral(ExpressionId id, LongEnoughInt value) override;
+    virtual void setLiteral(ExpressionId id, LongEnoughInt value, const StaticType &type) override;
 
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
@@ -62,6 +62,7 @@ public:
     virtual std::shared_ptr<FunctionGen> handleFunction( IdentifierId id ) override;
 
     void dump() {
+        assert(llvmModule != nullptr);
         LLVMDumpModule(llvmModule);
     }
 };

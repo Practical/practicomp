@@ -10,14 +10,53 @@ FunctionGenImpl::~FunctionGenImpl() {
     assert(builder==nullptr);
 }
 
+static LLVMTypeRef toLLVMTypeBuiltin(const NamedType::BuiltIn *builtInType) {
+    LLVMTypeRef ret;
+
+    switch(builtInType->type) {
+    case NamedType::BuiltIn::Type::Invalid:
+        abort();
+        break;
+    case NamedType::BuiltIn::Type::Void:
+        ret = LLVMVoidType();
+        break;
+    case NamedType::BuiltIn::Type::Boolean:
+        ret = LLVMInt8Type();
+        break;
+    case NamedType::BuiltIn::Type::SignedInt:
+    case NamedType::BuiltIn::Type::UnsignedInt:
+    case NamedType::BuiltIn::Type::InternalUnsignedInt:
+        ret = LLVMIntType(builtInType->sizeInBits);
+        break;
+    }
+
+    return ret;
+}
+
+static LLVMTypeRef toLLVMType(const StaticType &practiType) {
+    auto meaning = getTypeMeaning( practiType.getId() );
+
+    LLVMTypeRef ret;
+
+    switch(meaning.index()) {
+    case TypeMeanings::BuiltIn:
+        ret = toLLVMTypeBuiltin( std::get<const NamedType::BuiltIn *>(meaning) );
+        break;
+    default:
+        abort(); // Unexpected result
+    }
+
+    return ret;
+}
+
 void FunctionGenImpl::functionEnter(
-        IdentifierId id, String name, StaticType returnType, Slice<VariableDeclaration> arguments,
+        IdentifierId id, String name, const StaticType &returnType, Slice<VariableDeclaration> arguments,
         String file, size_t line, size_t col)
 {
     auto llvmModule = module->getLLVMModule();
 
     std::vector<LLVMTypeRef> argumentTypes;
-    LLVMTypeRef retType = LLVMFunctionType( LLVMInt32Type() /*toLLVMType(returnType)*/, argumentTypes.data(), argumentTypes.size(), false );
+    LLVMTypeRef retType = LLVMFunctionType( toLLVMType(returnType), argumentTypes.data(), argumentTypes.size(), false );
     llvmFunction = LLVMAddFunction( llvmModule, toStdString(name).c_str(), retType );
     currentBlock = LLVMAppendBasicBlock( llvmFunction, "" );
 
@@ -37,8 +76,8 @@ void FunctionGenImpl::returnValue(ExpressionId id) {
     LLVMBuildRet( builder, lookupExpression(id) );
 }
 
-void FunctionGenImpl::setLiteral(ExpressionId id, LongEnoughInt value) {
-    addExpression( id, LLVMConstInt(LLVMInt32Type(), value, true) );
+void FunctionGenImpl::setLiteral(ExpressionId id, LongEnoughInt value, const StaticType &type) {
+    addExpression( id, LLVMConstInt(toLLVMType(type), value, true) );
 }
 
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
