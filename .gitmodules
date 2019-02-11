@@ -2,3 +2,7 @@
 	path = external/practical-sa
 	url = git@github.com:Practical/practical-sa.git
 	branch = master
+[submodule "external/test-cases"]
+	path = external/test-cases
+	url = git@github.com:Practical/practical-testcases.git
+	branch = master

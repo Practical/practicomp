@@ -50,7 +50,7 @@ static LLVMTypeRef toLLVMType(const StaticType &practiType) {
 }
 
 void FunctionGenImpl::functionEnter(
-        IdentifierId id, String name, const StaticType &returnType, Slice<VariableDeclaration> arguments,
+        IdentifierId id, String name, const StaticType &returnType, Slice<ArgumentDeclaration> arguments,
         String file, size_t line, size_t col)
 {
     auto llvmModule = module->getLLVMModule();
@@ -78,6 +78,14 @@ void FunctionGenImpl::returnValue(ExpressionId id) {
 
 void FunctionGenImpl::setLiteral(ExpressionId id, LongEnoughInt value, const StaticType &type) {
     addExpression( id, LLVMConstInt(toLLVMType(type), value, true) );
+}
+
+void FunctionGenImpl::allocateStackVar(ExpressionId id, const StaticType &type, String name) {
+    addExpression( id, LLVMBuildAlloca(builder, toLLVMType(type), toCStr(name)) );
+}
+
+void FunctionGenImpl::assign( ExpressionId lvalue, ExpressionId rvalue ) {
+    LLVMBuildStore(builder, lookupExpression(rvalue), lookupExpression(lvalue));
 }
 
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {

@@ -5,13 +5,58 @@
 #include "object_output.h"
 #include "support.h"
 
+#include <sys/types.h>
+#include <execinfo.h>
 #include <filesystem>
+#include <unistd.h>
+#include <signal.h>
+
+const char *signalToStr(int signum) {
+#define NAME(sig) case sig: return #sig
+    switch(signum) {
+        NAME(SIGSEGV);
+        NAME(SIGABRT);
+        NAME(SIGUSR1);
+        NAME(SIGUSR2);
+        NAME(SIGINT);
+        NAME(SIGILL);
+        NAME(SIGFPE);
+        NAME(SIGTERM);
+        NAME(SIGHUP);
+        NAME(SIGQUIT);
+        NAME(SIGTRAP);
+        NAME(SIGKILL);
+        NAME(SIGBUS);
+        NAME(SIGSYS);
+        NAME(SIGPIPE);
+        NAME(SIGALRM);
+        NAME(SIGURG);
+        NAME(SIGSTOP);
+        NAME(SIGCHLD);
+    }
+
+    return "Unknown signal";
+}
+
+void abortHandler(int signum) {
+    std::cerr<<"Compiler ABORTed on signal " << signalToStr(signum) << std::endl;
+
+    void *bt[50];
+    int btDepth = backtrace( bt, 50 );
+    backtrace_symbols_fd( bt, btDepth, 2 );
+
+    signal(signum, SIG_DFL);
+    kill( getpid(), signum );
+}
 
 int main(int argc, char *argv[]) {
     if( argc<2 ) {
         emitMsg(MsgLevel::Error, PACKAGE_NAME, "no input files");
         exit(1);
     }
+
+    signal(SIGABRT, abortHandler);
+    signal(SIGSEGV, abortHandler);
 
     auto arguments = allocateArguments();
 
