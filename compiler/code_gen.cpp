@@ -10,23 +10,20 @@ FunctionGenImpl::~FunctionGenImpl() {
     assert(builder==nullptr);
 }
 
-static LLVMTypeRef toLLVMTypeBuiltin(const NamedType::BuiltIn *builtInType) {
+static LLVMTypeRef toLLVMTypeBuiltin(const NamedType *type) {
     LLVMTypeRef ret;
 
-    switch(builtInType->type) {
-    case NamedType::BuiltIn::Type::Invalid:
-        abort();
-        break;
-    case NamedType::BuiltIn::Type::Void:
+    switch(type->type()) {
+    case NamedType::Type::Void:
         ret = LLVMVoidType();
         break;
-    case NamedType::BuiltIn::Type::Boolean:
+    case NamedType::Type::Boolean:
         ret = LLVMInt8Type();
         break;
-    case NamedType::BuiltIn::Type::SignedInt:
-    case NamedType::BuiltIn::Type::UnsignedInt:
-    case NamedType::BuiltIn::Type::InternalUnsignedInt:
-        ret = LLVMIntType(builtInType->sizeInBits);
+    case NamedType::Type::SignedInteger:
+    case NamedType::Type::UnsignedInteger:
+    case NamedType::Type::Char:
+        ret = LLVMIntType(type->size());
         break;
     }
 
@@ -34,19 +31,11 @@ static LLVMTypeRef toLLVMTypeBuiltin(const NamedType::BuiltIn *builtInType) {
 }
 
 static LLVMTypeRef toLLVMType(const StaticType &practiType) {
-    auto meaning = getTypeMeaning( practiType.getId() );
+    const NamedType *namedType = lookupTypeId( practiType.getId() );
 
-    LLVMTypeRef ret;
+    assert( namedType->isBuiltin() ); // TODO implement support for user defined types
 
-    switch(meaning.index()) {
-    case TypeMeanings::BuiltIn:
-        ret = toLLVMTypeBuiltin( std::get<const NamedType::BuiltIn *>(meaning) );
-        break;
-    default:
-        abort(); // Unexpected result
-    }
-
-    return ret;
+    return toLLVMTypeBuiltin( namedType );
 }
 
 void FunctionGenImpl::functionEnter(
