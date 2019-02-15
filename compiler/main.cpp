@@ -3,6 +3,7 @@
 #include "code_gen.h"
 #include "nocopy.h"
 #include "object_output.h"
+#include "practical-errors.h"
 #include "support.h"
 
 #include <sys/types.h>
