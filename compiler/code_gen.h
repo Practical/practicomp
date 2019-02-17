@@ -35,6 +35,7 @@ public:
 
     virtual void allocateStackVar(ExpressionId id, const StaticType &type, String name) override;
     virtual void assign( ExpressionId lvalue, ExpressionId rvalue ) override;
+    virtual void dereferencePointer( ExpressionId id, const StaticType &type, ExpressionId addr ) override;
 
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;

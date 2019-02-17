@@ -77,6 +77,10 @@ void FunctionGenImpl::assign( ExpressionId lvalue, ExpressionId rvalue ) {
     LLVMBuildStore(builder, lookupExpression(rvalue), lookupExpression(lvalue));
 }
 
+void FunctionGenImpl::dereferencePointer( ExpressionId id, const StaticType &type, ExpressionId addr ) {
+    addExpression( id, LLVMBuildLoad(builder, lookupExpression(addr), "") );
+}
+
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
     auto iter = expressionValuesTable.find(id);
     assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id

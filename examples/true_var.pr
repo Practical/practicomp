@@ -1,4 +1,0 @@
-def main() -> S8 {
-    def variable : S8 = 17;
-    0
-}
