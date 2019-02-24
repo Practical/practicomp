@@ -7,7 +7,7 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-AC_CONFIG_SRCDIR([examples/true.pr])
+AC_CONFIG_SRCDIR([compiler/code_gen.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SUBDIRS([external/practical-sa])
 AM_INIT_AUTOMAKE([foreign subdir-objects])

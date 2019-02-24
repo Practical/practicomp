@@ -81,6 +81,24 @@ void FunctionGenImpl::dereferencePointer( ExpressionId id, const StaticType &typ
     addExpression( id, LLVMBuildLoad(builder, lookupExpression(addr), "") );
 }
 
+void FunctionGenImpl::truncateInteger(
+        ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType )
+{
+    addExpression( id, LLVMBuildTrunc(builder, lookupExpression(source), toLLVMType(destType), "") );
+}
+
+void FunctionGenImpl::expandIntegerSigned(
+        ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType )
+{
+    addExpression( id, LLVMBuildSExt(builder, lookupExpression(source), toLLVMType(destType), "") );
+}
+
+void FunctionGenImpl::expandIntegerUnsigned(
+        ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType )
+{
+    addExpression( id, LLVMBuildZExt(builder, lookupExpression(source), toLLVMType(destType), "") );
+}
+
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
     auto iter = expressionValuesTable.find(id);
     assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id

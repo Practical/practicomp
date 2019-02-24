@@ -37,6 +37,13 @@ public:
     virtual void assign( ExpressionId lvalue, ExpressionId rvalue ) override;
     virtual void dereferencePointer( ExpressionId id, const StaticType &type, ExpressionId addr ) override;
 
+    virtual void truncateInteger(
+            ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType ) override;
+    virtual void expandIntegerSigned(
+            ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType ) override;
+    virtual void expandIntegerUnsigned(
+            ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType ) override;
+
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
     void addExpression( ExpressionId id, LLVMValueRef value );
