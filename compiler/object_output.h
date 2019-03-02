@@ -8,8 +8,6 @@
 #include <filesystem>
 
 class ObjectOutput {
-    LLVMTargetRef target;
-
 public:
     ObjectOutput(std::filesystem::path outputFile, const char *targetTriplet, ModuleGenImpl &module);
 

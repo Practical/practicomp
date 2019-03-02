@@ -25,7 +25,7 @@ public:
     virtual ~FunctionGenImpl();
 
     virtual void functionEnter(
-            IdentifierId id, String name, const StaticType &returnType, Slice<ArgumentDeclaration> arguments,
+            IdentifierId id, String name, const StaticType &returnType, Slice<const ArgumentDeclaration> arguments,
             String file, size_t line, size_t col) override;
 
     virtual void functionLeave(IdentifierId id) override;

@@ -39,18 +39,29 @@ static LLVMTypeRef toLLVMType(const StaticType &practiType) {
 }
 
 void FunctionGenImpl::functionEnter(
-        IdentifierId id, String name, const StaticType &returnType, Slice<ArgumentDeclaration> arguments,
+        IdentifierId id, String name, const StaticType &returnType, Slice<const ArgumentDeclaration> arguments,
         String file, size_t line, size_t col)
 {
     auto llvmModule = module->getLLVMModule();
 
     std::vector<LLVMTypeRef> argumentTypes;
+    argumentTypes.reserve(arguments.size());
+    for( auto &argDecl : arguments ) {
+        argumentTypes.emplace_back( toLLVMType(argDecl.type) );
+    }
+
     LLVMTypeRef retType = LLVMFunctionType( toLLVMType(returnType), argumentTypes.data(), argumentTypes.size(), false );
     llvmFunction = LLVMAddFunction( llvmModule, toStdString(name).c_str(), retType );
     currentBlock = LLVMAppendBasicBlock( llvmFunction, "" );
 
     builder = LLVMCreateBuilder();
     LLVMPositionBuilderAtEnd(builder, currentBlock);
+
+    // Allocate stack location for the arguments, so that they behave like lvalues
+    for( size_t i = 0; i<arguments.size(); ++i ) {
+        allocateStackVar( arguments[i].lvalueId, arguments[i].type, arguments[i].name );
+        LLVMBuildStore(builder, LLVMGetParam( llvmFunction, i ), lookupExpression(arguments[i].lvalueId));
+    }
 }
 
 void FunctionGenImpl::functionLeave(IdentifierId id)

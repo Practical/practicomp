@@ -2,8 +2,7 @@
 
 #include <llvm-c/Target.h>
 
-ObjectOutput::ObjectOutput(std::filesystem::path outputFile, const char *targetTriplet, ModuleGenImpl &module) :
-    target(nullptr)
+ObjectOutput::ObjectOutput(std::filesystem::path outputFile, const char *targetTriplet, ModuleGenImpl &module)
 {
     LLVMInitializeAllTargetInfos();
     LLVMInitializeAllTargets();
