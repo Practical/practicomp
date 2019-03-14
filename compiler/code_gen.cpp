@@ -110,6 +110,18 @@ void FunctionGenImpl::expandIntegerUnsigned(
     addExpression( id, LLVMBuildZExt(builder, lookupExpression(source), toLLVMType(destType), "") );
 }
 
+void FunctionGenImpl::callFunctionDirect(
+        ExpressionId id, String name, Slice<const ExpressionId> arguments, const StaticType &returnType )
+{
+    LLVMValueRef functionRef = LLVMGetNamedFunction(module->getLLVMModule(), toCStr(name));
+    std::vector<LLVMValueRef> llvmArguments;
+    llvmArguments.reserve(arguments.size());
+    for( const auto &argument: arguments ) {
+        llvmArguments.emplace_back( lookupExpression(argument) );
+    }
+    addExpression( id, LLVMBuildCall(builder, functionRef, llvmArguments.data(), llvmArguments.size(), "") );
+}
+
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
     auto iter = expressionValuesTable.find(id);
     assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id

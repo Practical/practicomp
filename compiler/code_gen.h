@@ -43,6 +43,8 @@ public:
             ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType ) override;
     virtual void expandIntegerUnsigned(
             ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType ) override;
+    void callFunctionDirect(
+            ExpressionId id, String name, Slice<const ExpressionId> arguments, const StaticType &returnType ) override;    
 
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
