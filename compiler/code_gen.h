@@ -25,26 +25,26 @@ public:
     virtual ~FunctionGenImpl();
 
     virtual void functionEnter(
-            IdentifierId id, String name, const StaticType &returnType, Slice<const ArgumentDeclaration> arguments,
+            IdentifierId id, String name, StaticType::Ptr returnType, Slice<const ArgumentDeclaration> arguments,
             String file, size_t line, size_t col) override;
 
     virtual void functionLeave(IdentifierId id) override;
 
     virtual void returnValue(ExpressionId id) override;
-    virtual void setLiteral(ExpressionId id, LongEnoughInt value, const StaticType &type) override;
+    virtual void setLiteral(ExpressionId id, LongEnoughInt value, StaticType::Ptr type) override;
 
-    virtual void allocateStackVar(ExpressionId id, const StaticType &type, String name) override;
+    virtual void allocateStackVar(ExpressionId id, StaticType::Ptr type, String name) override;
     virtual void assign( ExpressionId lvalue, ExpressionId rvalue ) override;
-    virtual void dereferencePointer( ExpressionId id, const StaticType &type, ExpressionId addr ) override;
+    virtual void dereferencePointer( ExpressionId id, StaticType::Ptr type, ExpressionId addr ) override;
 
     virtual void truncateInteger(
-            ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType ) override;
+            ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType ) override;
     virtual void expandIntegerSigned(
-            ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType ) override;
+            ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType ) override;
     virtual void expandIntegerUnsigned(
-            ExpressionId id, ExpressionId source, const StaticType &sourceType, const StaticType &destType ) override;
+            ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType ) override;
     void callFunctionDirect(
-            ExpressionId id, String name, Slice<const ExpressionId> arguments, const StaticType &returnType ) override;    
+            ExpressionId id, String name, Slice<const ExpressionId> arguments, StaticType::Ptr returnType ) override;    
 
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
