@@ -43,9 +43,11 @@ public:
             ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType ) override;
     virtual void expandIntegerUnsigned(
             ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType ) override;
-    void callFunctionDirect(
+    virtual void callFunctionDirect(
             ExpressionId id, String name, Slice<const ExpressionId> arguments, StaticType::Ptr returnType ) override;    
 
+    virtual void binaryOperatorPlus(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::Ptr resultType ) override;
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
     void addExpression( ExpressionId id, LLVMValueRef value );

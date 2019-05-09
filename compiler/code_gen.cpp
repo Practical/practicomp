@@ -122,6 +122,12 @@ void FunctionGenImpl::callFunctionDirect(
     addExpression( id, LLVMBuildCall(builder, functionRef, llvmArguments.data(), llvmArguments.size(), "") );
 }
 
+void FunctionGenImpl::binaryOperatorPlus(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::Ptr resultType )
+{
+    addExpression( id, LLVMBuildAdd(builder, lookupExpression(left), lookupExpression(right), "") );
+}
+
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
     auto iter = expressionValuesTable.find(id);
     assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id
