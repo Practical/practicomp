@@ -16,8 +16,8 @@ latency are everything.
 To compile Practicomp, you'll need LLVM version 7 (the C interface) installed on your system. You will also need a fairly up to
 date C++ compiler.
 
-If checking out from git (as if there is any other option at this point in time), make sure to `git submodule update` to get the
-semantic analyzer library checked out under `external/practical-sa`. Since commits under the practical-sa projects don't always
+If checking out from git (as if there is any other option at this point in time), make sure to `git submodule update --init` to get
+the semantic analyzer library checked out under `external/practical-sa`. Since commits under the practical-sa projects don't always
 update the practicomp project, updating the subproject to the latest master might be advisable.
 
 # What's Planned?
