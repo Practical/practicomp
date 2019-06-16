@@ -136,6 +136,12 @@ void FunctionGenImpl::binaryOperatorPlus(
     addExpression( id, LLVMBuildAdd(builder, lookupExpression(left), lookupExpression(right), "") );
 }
 
+void FunctionGenImpl::binaryOperatorMinus(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::Ptr resultType )
+{
+    addExpression( id, LLVMBuildSub(builder, lookupExpression(left), lookupExpression(right), "") );
+}
+
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
     auto iter = expressionValuesTable.find(id);
     assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id

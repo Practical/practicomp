@@ -56,6 +56,8 @@ public:
 
     virtual void binaryOperatorPlus(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::Ptr resultType ) override;
+    virtual void binaryOperatorMinus(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::Ptr resultType ) override;
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
     void addExpression( ExpressionId id, LLVMValueRef value );
