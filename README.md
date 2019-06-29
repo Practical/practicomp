@@ -23,3 +23,8 @@ update the practicomp project, updating the subproject to the latest master migh
 # What's Planned?
 For specifics on the plans for the language, syntax and features, please check out the
 [language's wiki](https://github.com/Practical/practical-sa/wiki).
+
+# Community and Tracking Progress
+You can watch the [semantics analyzer](https://github.com/Practical/practical-sa) repository to get minute updates on minor
+improvements to the language. Announcements on more significant milestones will be posted to the announcement forum at
+https://forum.practical-pl.org. This is also the place to ask questions about the language and its details.
