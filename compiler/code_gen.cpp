@@ -25,6 +25,9 @@ static LLVMTypeRef toLLVMTypeBuiltin(const NamedType *type) {
     case NamedType::Type::Void:
         ret = LLVMVoidType();
         break;
+    case NamedType::Type::Type:
+        abort(); // "Asked to code-gen compile-time only type Type";
+        break;
     case NamedType::Type::Boolean:
         ret = LLVMInt8Type();
         break;
