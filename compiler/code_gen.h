@@ -40,6 +40,7 @@ public:
 
     virtual void returnValue(ExpressionId id) override;
     virtual void setLiteral(ExpressionId id, LongEnoughInt value, StaticType::Ptr type) override;
+    virtual void setLiteral(ExpressionId id, bool value) override;
 
     virtual void allocateStackVar(ExpressionId id, StaticType::Ptr type, String name) override;
     virtual void assign( ExpressionId lvalue, ExpressionId rvalue ) override;

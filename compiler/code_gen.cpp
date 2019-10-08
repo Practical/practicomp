@@ -29,7 +29,7 @@ static LLVMTypeRef toLLVMTypeBuiltin(const NamedType *type) {
         abort(); // "Asked to code-gen compile-time only type Type";
         break;
     case NamedType::Type::Boolean:
-        ret = LLVMInt8Type();
+        ret = LLVMInt1Type();
         break;
     case NamedType::Type::SignedInteger:
     case NamedType::Type::UnsignedInteger:
@@ -89,6 +89,10 @@ void FunctionGenImpl::returnValue(ExpressionId id) {
 
 void FunctionGenImpl::setLiteral(ExpressionId id, LongEnoughInt value, StaticType::Ptr type) {
     addExpression( id, LLVMConstInt(toLLVMType(type), value, true) );
+}
+
+void FunctionGenImpl::setLiteral(ExpressionId id, bool value) {
+    addExpression( id, LLVMConstInt(LLVMInt1Type(), value, true) );
 }
 
 void FunctionGenImpl::allocateStackVar(ExpressionId id, StaticType::Ptr type, String name) {
