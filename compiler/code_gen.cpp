@@ -12,6 +12,11 @@
 
 #include <llvm-c/Analysis.h>
 
+#include <sstream>
+
+JumpPointData::JumpPointData( Type type ) : type(type) {
+}
+
 FunctionGenImpl::~FunctionGenImpl() {
     assert(llvmFunction==nullptr);
     assert(currentBlock==nullptr);
@@ -63,10 +68,9 @@ void FunctionGenImpl::functionEnter(
 
     LLVMTypeRef retType = LLVMFunctionType( toLLVMType(returnType), argumentTypes.data(), argumentTypes.size(), false );
     llvmFunction = LLVMAddFunction( llvmModule, toStdString(name).c_str(), retType );
-    currentBlock = LLVMAppendBasicBlock( llvmFunction, "" );
 
     builder = LLVMCreateBuilder();
-    LLVMPositionBuilderAtEnd(builder, currentBlock);
+    addBlock();
 
     // Allocate stack location for the arguments, so that they behave like lvalues
     for( size_t i = 0; i<arguments.size(); ++i ) {
@@ -77,6 +81,7 @@ void FunctionGenImpl::functionEnter(
 
 void FunctionGenImpl::functionLeave(IdentifierId id)
 {
+    // XXX Need to support "return" statement from middle of function definition
     LLVMDisposeBuilder(builder);
     builder = nullptr;
     currentBlock = nullptr;
@@ -85,6 +90,82 @@ void FunctionGenImpl::functionLeave(IdentifierId id)
 
 void FunctionGenImpl::returnValue(ExpressionId id) {
     LLVMBuildRet( builder, lookupExpression(id) );
+}
+
+void FunctionGenImpl::branch(
+        ExpressionId id, ExpressionId conditionExpression, JumpPointId elsePoint, JumpPointId continuationPoint)
+{
+    LLVMBasicBlockRef previousCurrent = currentBlock;
+
+    assert( id==ExpressionId() ); // TODO implement
+    auto ifBlock = addBlock();
+    BranchPointData &branchData = branchStack.emplace_back();
+
+    LLVMBasicBlockRef nextBlockInFlow = nullptr;
+    if( elsePoint!=JumpPointId() ) {
+        branchData.elsePointId = elsePoint;
+        auto jumpData = jumpPointsTable.emplace(
+                std::piecewise_construct,
+                std::forward_as_tuple( elsePoint ),
+                std::forward_as_tuple( JumpPointData::Type::Branch )
+        );
+        assert( jumpData.second );
+        nextBlockInFlow = branchData.elsePointBlock = addBlock( jumpData.first->second.getLabel() );
+        jumpData.first->second.definePoint();
+    }
+
+    branchData.continuationPointId = continuationPoint;
+    auto jumpData = jumpPointsTable.emplace(
+            std::piecewise_construct,
+            std::forward_as_tuple( continuationPoint ),
+            std::forward_as_tuple( JumpPointData::Type::Branch )
+    );
+    assert( jumpData.second );
+    branchData.continuationPointBlock = addBlock( jumpData.first->second.getLabel() );
+    jumpData.first->second.definePoint();
+
+    if( !nextBlockInFlow )
+        nextBlockInFlow = branchData.continuationPointBlock;
+
+    setCurrentBlock( previousCurrent );
+    LLVMBuildCondBr( builder, lookupExpression(conditionExpression), ifBlock, nextBlockInFlow );
+
+    setCurrentBlock( ifBlock );
+}
+
+void FunctionGenImpl::setJumpPoint(JumpPointId id, String name) {
+    if( ! branchStack.empty() ) {
+        // We are inside a nested context. We need to see whether id is trying to tell us this context is done
+        auto &stackTop = branchStack.back();
+
+        if( stackTop.elsePointId!=JumpPointId() ) {
+            if( id==stackTop.elsePointId ) {
+                // We just finished the "if" clause, need to start the "else" clause
+                LLVMBuildBr( builder, stackTop.elsePointBlock );
+                setCurrentBlock( stackTop.elsePointBlock );
+                stackTop.elsePointId = JumpPointId();
+
+                return;
+            }
+        } else {
+            if( id==stackTop.continuationPointId ) {
+                // We just finished the "else" clause (or an elseless "if" clause")
+                LLVMBuildBr( builder, stackTop.continuationPointBlock );
+                setCurrentBlock( stackTop.continuationPointBlock );
+                branchStack.pop_back();
+
+                return;
+            }
+        }
+    }
+
+    abort(); // XXX setJumpPoint not as part of a branch not yet implemented
+    // LLVMBuildBr( builder, dest );
+}
+
+void FunctionGenImpl::jump(JumpPointId destination) {
+    // TODO implement
+    abort();
 }
 
 void FunctionGenImpl::setLiteral(ExpressionId id, LongEnoughInt value, StaticType::Ptr type) {
@@ -159,6 +240,24 @@ LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
 void FunctionGenImpl::addExpression( ExpressionId id, LLVMValueRef value ) {
     assert( expressionValuesTable.find(id)==expressionValuesTable.end() ); // Adding an already existing expression
     expressionValuesTable[id] = value;
+}
+
+LLVMBasicBlockRef FunctionGenImpl::addBlock( const std::string &label ) {
+    LLVMBasicBlockRef ret = nullptr;
+    if( nextBlock==nullptr )
+        ret = LLVMAppendBasicBlock( llvmFunction, label.c_str() );
+    else
+        ret = LLVMInsertBasicBlock( nextBlock, label.c_str() );
+
+    setCurrentBlock( ret );
+
+    return ret;
+}
+
+void FunctionGenImpl::setCurrentBlock( LLVMBasicBlockRef newCurrentBlock ) {
+    currentBlock = newCurrentBlock;
+    nextBlock = LLVMGetNextBasicBlock( currentBlock );
+    LLVMPositionBuilderAtEnd(builder, currentBlock);
 }
 
 void ModuleGenImpl::moduleEnter(

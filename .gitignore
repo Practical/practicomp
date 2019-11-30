@@ -12,6 +12,7 @@
 /ltmain.sh
 
 Makefile.in
+tags
 
 .*.swp
 *~

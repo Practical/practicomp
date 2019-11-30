@@ -14,19 +14,49 @@
 
 #include <llvm-c/Core.h>
 
+#include <deque>
 #include <unordered_map>
 
 using namespace PracticalSemanticAnalyzer;
 
 class ModuleGenImpl;
 
+class JumpPointData : NoCopy {
+public:
+    enum class Type { Label, Branch } type;
+
+private:
+    std::string label;
+    bool defined = false;
+
+public:
+    explicit JumpPointData( Type type );
+    explicit JumpPointData( const std::string &label ) : type(Type::Label), label( std::move(label) ) {}
+
+    void definePoint() {
+        assert( !defined );
+        defined = true;
+    }
+
+    const std::string &getLabel() const {
+        return label;
+    }
+};
+
+struct BranchPointData {
+    JumpPointId elsePointId, continuationPointId;
+    LLVMBasicBlockRef elsePointBlock = nullptr, continuationPointBlock = nullptr;
+};
+
 class FunctionGenImpl : public FunctionGen, private NoCopy {
     ModuleGenImpl *module = nullptr;
     LLVMValueRef llvmFunction = nullptr;
-    LLVMBasicBlockRef currentBlock = nullptr;
+    LLVMBasicBlockRef currentBlock = nullptr, nextBlock = nullptr;
     LLVMBuilderRef builder = nullptr;
 
     std::unordered_map< ExpressionId, LLVMValueRef > expressionValuesTable;
+    std::unordered_map< JumpPointId, JumpPointData > jumpPointsTable;
+    std::deque< BranchPointData > branchStack;
 
 public:
     FunctionGenImpl(ModuleGenImpl *module) : module(module) {}
@@ -39,6 +69,13 @@ public:
     virtual void functionLeave(IdentifierId id) override;
 
     virtual void returnValue(ExpressionId id) override;
+
+    virtual void branch(
+            ExpressionId id, ExpressionId conditionExpression, JumpPointId elsePoint, JumpPointId continuationPoint
+        ) override;
+    virtual void setJumpPoint(JumpPointId id, String name) override;
+    virtual void jump(JumpPointId destination) override;
+
     virtual void setLiteral(ExpressionId id, LongEnoughInt value, StaticType::Ptr type) override;
     virtual void setLiteral(ExpressionId id, bool value) override;
 
@@ -62,6 +99,9 @@ public:
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
     void addExpression( ExpressionId id, LLVMValueRef value );
+
+    LLVMBasicBlockRef addBlock( const std::string &label = "" );
+    void setCurrentBlock( LLVMBasicBlockRef newCurrentBlock );
 };
 
 class ModuleGenImpl : public ModuleGen, private NoCopy {
