@@ -92,6 +92,10 @@ void FunctionGenImpl::returnValue(ExpressionId id) {
     LLVMBuildRet( builder, lookupExpression(id) );
 }
 
+void FunctionGenImpl::returnValue() {
+    LLVMBuildRetVoid( builder );
+}
+
 void FunctionGenImpl::branch(
         ExpressionId id, ExpressionId conditionExpression, JumpPointId elsePoint, JumpPointId continuationPoint)
 {

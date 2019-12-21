@@ -69,6 +69,7 @@ public:
     virtual void functionLeave(IdentifierId id) override;
 
     virtual void returnValue(ExpressionId id) override;
+    virtual void returnValue() override;
 
     virtual void branch(
             ExpressionId id, ExpressionId conditionExpression, JumpPointId elsePoint, JumpPointId continuationPoint
