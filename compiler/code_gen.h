@@ -46,6 +46,9 @@ public:
 struct BranchPointData {
     JumpPointId elsePointId, continuationPointId;
     LLVMBasicBlockRef elsePointBlock = nullptr, continuationPointBlock = nullptr;
+    LLVMBasicBlockRef phiBlocks[2];
+    ExpressionId conditionValue, ifBlockValue, elseBlockValue;
+    StaticType::Ptr type;
 };
 
 class FunctionGenImpl : public FunctionGen, private NoCopy {
@@ -72,8 +75,10 @@ public:
     virtual void returnValue() override;
 
     virtual void conditionalBranch(
-            ExpressionId id, ExpressionId conditionExpression, JumpPointId elsePoint, JumpPointId continuationPoint
+            ExpressionId id, StaticType::Ptr type, ExpressionId conditionExpression, JumpPointId elsePoint,
+            JumpPointId continuationPoint
         ) override;
+    virtual void setConditionClauseResult( ExpressionId id ) override;
     virtual void setJumpPoint(JumpPointId id, String name) override;
     virtual void jump(JumpPointId destination) override;
 

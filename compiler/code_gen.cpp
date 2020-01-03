@@ -97,13 +97,16 @@ void FunctionGenImpl::returnValue() {
 }
 
 void FunctionGenImpl::conditionalBranch(
-        ExpressionId id, ExpressionId conditionExpression, JumpPointId elsePoint, JumpPointId continuationPoint)
+        ExpressionId id, StaticType::Ptr type, ExpressionId conditionExpression, JumpPointId elsePoint,
+        JumpPointId continuationPoint)
 {
     LLVMBasicBlockRef previousCurrent = currentBlock;
 
-    assert( id==ExpressionId() ); // TODO implement
     auto ifBlock = addBlock();
     BranchPointData &branchData = branchStack.emplace_back();
+    branchData.conditionValue = id;
+    branchData.type = type;
+    branchData.phiBlocks[0] = currentBlock;
 
     LLVMBasicBlockRef nextBlockInFlow = nullptr;
     if( elsePoint!=JumpPointId() ) {
@@ -114,9 +117,10 @@ void FunctionGenImpl::conditionalBranch(
                 std::forward_as_tuple( JumpPointData::Type::Branch )
         );
         assert( jumpData.second );
-        nextBlockInFlow = branchData.elsePointBlock = addBlock( jumpData.first->second.getLabel() );
+        nextBlockInFlow = branchData.phiBlocks[1] = branchData.elsePointBlock = addBlock( jumpData.first->second.getLabel() );
         jumpData.first->second.definePoint();
-    }
+    } else
+        assert( id=ExpressionId() );
 
     branchData.continuationPointId = continuationPoint;
     auto jumpData = jumpPointsTable.emplace(
@@ -137,6 +141,23 @@ void FunctionGenImpl::conditionalBranch(
     setCurrentBlock( ifBlock );
 }
 
+void FunctionGenImpl::setConditionClauseResult( ExpressionId id ) {
+    assert( ! branchStack.empty() );
+
+    BranchPointData &stackTop = branchStack.back();
+    assert( stackTop.conditionValue!=ExpressionId() );
+
+    if( stackTop.elsePointId!=JumpPointId() ) {
+        // Still in the "if" clause
+        assert( stackTop.ifBlockValue==ExpressionId() );
+        stackTop.ifBlockValue=id;
+    } else {
+        assert( stackTop.ifBlockValue!=ExpressionId() );
+        assert( stackTop.elseBlockValue==ExpressionId() );
+        stackTop.elseBlockValue=id;
+    }
+}
+
 void FunctionGenImpl::setJumpPoint(JumpPointId id, String name) {
     if( ! branchStack.empty() ) {
         // We are inside a nested context. We need to see whether id is trying to tell us this context is done
@@ -145,7 +166,7 @@ void FunctionGenImpl::setJumpPoint(JumpPointId id, String name) {
         if( stackTop.elsePointId!=JumpPointId() ) {
             if( id==stackTop.elsePointId ) {
                 // We just finished the "if" clause, need to start the "else" clause
-                LLVMBuildBr( builder, stackTop.elsePointBlock );
+                LLVMBuildBr( builder, stackTop.continuationPointBlock );
                 setCurrentBlock( stackTop.elsePointBlock );
                 stackTop.elsePointId = JumpPointId();
 
@@ -156,6 +177,21 @@ void FunctionGenImpl::setJumpPoint(JumpPointId id, String name) {
                 // We just finished the "else" clause (or an elseless "if" clause")
                 LLVMBuildBr( builder, stackTop.continuationPointBlock );
                 setCurrentBlock( stackTop.continuationPointBlock );
+
+                if( stackTop.conditionValue!=ExpressionId() ) {
+                    // We need to set a value to the condition
+                    assert( stackTop.ifBlockValue!=ExpressionId() );
+                    assert( stackTop.elseBlockValue!=ExpressionId() );
+
+                    LLVMValueRef phiValue = LLVMBuildPhi(builder, toLLVMType(stackTop.type), "");
+                    addExpression( stackTop.conditionValue, phiValue );
+                    LLVMValueRef values[2] = {
+                        lookupExpression(stackTop.ifBlockValue),
+                        lookupExpression(stackTop.elseBlockValue)
+                    };
+                    LLVMAddIncoming( phiValue, values, stackTop.phiBlocks, 2 );
+                }
+
                 branchStack.pop_back();
 
                 return;
