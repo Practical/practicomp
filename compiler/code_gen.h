@@ -71,7 +71,7 @@ public:
     virtual void returnValue(ExpressionId id) override;
     virtual void returnValue() override;
 
-    virtual void branch(
+    virtual void conditionalBranch(
             ExpressionId id, ExpressionId conditionExpression, JumpPointId elsePoint, JumpPointId continuationPoint
         ) override;
     virtual void setJumpPoint(JumpPointId id, String name) override;

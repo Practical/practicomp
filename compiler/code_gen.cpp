@@ -96,7 +96,7 @@ void FunctionGenImpl::returnValue() {
     LLVMBuildRetVoid( builder );
 }
 
-void FunctionGenImpl::branch(
+void FunctionGenImpl::conditionalBranch(
         ExpressionId id, ExpressionId conditionExpression, JumpPointId elsePoint, JumpPointId continuationPoint)
 {
     LLVMBasicBlockRef previousCurrent = currentBlock;
