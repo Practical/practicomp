@@ -120,7 +120,7 @@ void FunctionGenImpl::conditionalBranch(
         nextBlockInFlow = branchData.phiBlocks[1] = branchData.elsePointBlock = addBlock( jumpData.first->second.getLabel() );
         jumpData.first->second.definePoint();
     } else
-        assert( id=ExpressionId() );
+        assert( id==ExpressionId() );
 
     branchData.continuationPointId = continuationPoint;
     auto jumpData = jumpPointsTable.emplace(
