@@ -48,7 +48,7 @@ struct BranchPointData {
     LLVMBasicBlockRef elsePointBlock = nullptr, continuationPointBlock = nullptr;
     LLVMBasicBlockRef phiBlocks[2];
     ExpressionId conditionValue, ifBlockValue, elseBlockValue;
-    StaticType::Ptr type;
+    StaticType::CPtr type;
 };
 
 class FunctionGenImpl : public FunctionGen, private NoCopy {
@@ -66,7 +66,7 @@ public:
     virtual ~FunctionGenImpl();
 
     virtual void functionEnter(
-            IdentifierId id, String name, StaticType::Ptr returnType, Slice<const ArgumentDeclaration> arguments,
+            IdentifierId id, String name, StaticType::CPtr returnType, Slice<const ArgumentDeclaration> arguments,
             String file, size_t line, size_t col) override;
 
     virtual void functionLeave(IdentifierId id) override;
@@ -75,33 +75,33 @@ public:
     virtual void returnValue() override;
 
     virtual void conditionalBranch(
-            ExpressionId id, StaticType::Ptr type, ExpressionId conditionExpression, JumpPointId elsePoint,
+            ExpressionId id, StaticType::CPtr type, ExpressionId conditionExpression, JumpPointId elsePoint,
             JumpPointId continuationPoint
         ) override;
     virtual void setConditionClauseResult( ExpressionId id ) override;
     virtual void setJumpPoint(JumpPointId id, String name) override;
     virtual void jump(JumpPointId destination) override;
 
-    virtual void setLiteral(ExpressionId id, LongEnoughInt value, StaticType::Ptr type) override;
+    virtual void setLiteral(ExpressionId id, LongEnoughInt value, StaticType::CPtr type) override;
     virtual void setLiteral(ExpressionId id, bool value) override;
 
-    virtual void allocateStackVar(ExpressionId id, StaticType::Ptr type, String name) override;
+    virtual void allocateStackVar(ExpressionId id, StaticType::CPtr type, String name) override;
     virtual void assign( ExpressionId lvalue, ExpressionId rvalue ) override;
-    virtual void dereferencePointer( ExpressionId id, StaticType::Ptr type, ExpressionId addr ) override;
+    virtual void dereferencePointer( ExpressionId id, StaticType::CPtr type, ExpressionId addr ) override;
 
     virtual void truncateInteger(
-            ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType ) override;
+            ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType ) override;
     virtual void expandIntegerSigned(
-            ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType ) override;
+            ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType ) override;
     virtual void expandIntegerUnsigned(
-            ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType ) override;
+            ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType ) override;
     virtual void callFunctionDirect(
-            ExpressionId id, String name, Slice<const ExpressionId> arguments, StaticType::Ptr returnType ) override;    
+            ExpressionId id, String name, Slice<const ExpressionId> arguments, StaticType::CPtr returnType ) override;
 
     virtual void binaryOperatorPlus(
-            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::Ptr resultType ) override;
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
     virtual void binaryOperatorMinus(
-            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::Ptr resultType ) override;
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
     void addExpression( ExpressionId id, LLVMValueRef value );

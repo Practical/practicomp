@@ -23,39 +23,12 @@ FunctionGenImpl::~FunctionGenImpl() {
     assert(builder==nullptr);
 }
 
-static LLVMTypeRef toLLVMTypeBuiltin(const NamedType *type) {
-    LLVMTypeRef ret;
-
-    switch(type->type()) {
-    case NamedType::Type::Void:
-        ret = LLVMVoidType();
-        break;
-    case NamedType::Type::Type:
-        abort(); // "Asked to code-gen compile-time only type Type";
-        break;
-    case NamedType::Type::Boolean:
-        ret = LLVMInt1Type();
-        break;
-    case NamedType::Type::SignedInteger:
-    case NamedType::Type::UnsignedInteger:
-    case NamedType::Type::Char:
-        ret = LLVMIntType(type->size());
-        break;
-    }
-
-    return ret;
-}
-
-static LLVMTypeRef toLLVMType(StaticType::Ptr practiType) {
-    const NamedType *namedType = lookupTypeId( practiType->getId() );
-
-    assert( namedType->isBuiltin() ); // TODO implement support for user defined types
-
-    return toLLVMTypeBuiltin( namedType );
+static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
+    abort(); // TODO implement
 }
 
 void FunctionGenImpl::functionEnter(
-        IdentifierId id, String name, StaticType::Ptr returnType, Slice<const ArgumentDeclaration> arguments,
+        IdentifierId id, String name, StaticType::CPtr returnType, Slice<const ArgumentDeclaration> arguments,
         String file, size_t line, size_t col)
 {
     auto llvmModule = module->getLLVMModule();
@@ -97,7 +70,7 @@ void FunctionGenImpl::returnValue() {
 }
 
 void FunctionGenImpl::conditionalBranch(
-        ExpressionId id, StaticType::Ptr type, ExpressionId conditionExpression, JumpPointId elsePoint,
+        ExpressionId id, StaticType::CPtr type, ExpressionId conditionExpression, JumpPointId elsePoint,
         JumpPointId continuationPoint)
 {
     LLVMBasicBlockRef previousCurrent = currentBlock;
@@ -208,7 +181,7 @@ void FunctionGenImpl::jump(JumpPointId destination) {
     abort();
 }
 
-void FunctionGenImpl::setLiteral(ExpressionId id, LongEnoughInt value, StaticType::Ptr type) {
+void FunctionGenImpl::setLiteral(ExpressionId id, LongEnoughInt value, StaticType::CPtr type) {
     addExpression( id, LLVMConstInt(toLLVMType(type), value, true) );
 }
 
@@ -216,7 +189,7 @@ void FunctionGenImpl::setLiteral(ExpressionId id, bool value) {
     addExpression( id, LLVMConstInt(LLVMInt1Type(), value, true) );
 }
 
-void FunctionGenImpl::allocateStackVar(ExpressionId id, StaticType::Ptr type, String name) {
+void FunctionGenImpl::allocateStackVar(ExpressionId id, StaticType::CPtr type, String name) {
     addExpression( id, LLVMBuildAlloca(builder, toLLVMType(type), toCStr(name)) );
 }
 
@@ -224,30 +197,30 @@ void FunctionGenImpl::assign( ExpressionId lvalue, ExpressionId rvalue ) {
     LLVMBuildStore(builder, lookupExpression(rvalue), lookupExpression(lvalue));
 }
 
-void FunctionGenImpl::dereferencePointer( ExpressionId id, StaticType::Ptr type, ExpressionId addr ) {
+void FunctionGenImpl::dereferencePointer( ExpressionId id, StaticType::CPtr type, ExpressionId addr ) {
     addExpression( id, LLVMBuildLoad(builder, lookupExpression(addr), "") );
 }
 
 void FunctionGenImpl::truncateInteger(
-        ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType )
+        ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType )
 {
     addExpression( id, LLVMBuildTrunc(builder, lookupExpression(source), toLLVMType(destType), "") );
 }
 
 void FunctionGenImpl::expandIntegerSigned(
-        ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType )
+        ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType )
 {
     addExpression( id, LLVMBuildSExt(builder, lookupExpression(source), toLLVMType(destType), "") );
 }
 
 void FunctionGenImpl::expandIntegerUnsigned(
-        ExpressionId id, ExpressionId source, StaticType::Ptr sourceType, StaticType::Ptr destType )
+        ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType )
 {
     addExpression( id, LLVMBuildZExt(builder, lookupExpression(source), toLLVMType(destType), "") );
 }
 
 void FunctionGenImpl::callFunctionDirect(
-        ExpressionId id, String name, Slice<const ExpressionId> arguments, StaticType::Ptr returnType )
+        ExpressionId id, String name, Slice<const ExpressionId> arguments, StaticType::CPtr returnType )
 {
     LLVMValueRef functionRef = LLVMGetNamedFunction(module->getLLVMModule(), toCStr(name));
     std::vector<LLVMValueRef> llvmArguments;
@@ -259,13 +232,13 @@ void FunctionGenImpl::callFunctionDirect(
 }
 
 void FunctionGenImpl::binaryOperatorPlus(
-            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::Ptr resultType )
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
 {
     addExpression( id, LLVMBuildAdd(builder, lookupExpression(left), lookupExpression(right), "") );
 }
 
 void FunctionGenImpl::binaryOperatorMinus(
-            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::Ptr resultType )
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
 {
     addExpression( id, LLVMBuildSub(builder, lookupExpression(left), lookupExpression(right), "") );
 }

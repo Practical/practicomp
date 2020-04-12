@@ -1,6 +1,6 @@
 /* This file is part of the Practical programming langauge. https://github.com/Practical/practical-sa
  *
- * This file is file is copyright (C) 2018-2019 by its authors.
+ * This file is file is copyright (C) 2018-2020 by its authors.
  * You can see the file's authors in the AUTHORS file in the project's home repository.
  *
  * This is available under the Boost license. The license's text is available under the LICENSE file in the project's
@@ -9,6 +9,7 @@
 #include "config.h"
 
 #include "code_gen.h"
+#include "lookup_context.h"
 #include "nocopy.h"
 #include "object_output.h"
 #include "practical-errors.h"
@@ -78,6 +79,8 @@ int main(int argc, char *argv[]) {
     }
 
     try {
+        ::BuiltinContextGen builtinGen;
+        PracticalSemanticAnalyzer::prepare( &builtinGen );
         int ret = compile(argv[1], arguments.get(), &codeGen);
         if( ret!=0 )
             return ret;
