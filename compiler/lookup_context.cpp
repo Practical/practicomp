@@ -10,28 +10,28 @@
 
 #include <llvm-c/Core.h>
 
-PracticalSemanticAnalyzer::TypeId BuiltinContextGen::registerVoidType( String name ) {
+static_assert( sizeof(LLVMTypeRef)==sizeof(PracticalSemanticAnalyzer::TypeId::p),
+        "PracticalSemanticAnalyzer::TypeId is not the right size for storing LLVMTypeRef" );
+PracticalSemanticAnalyzer::TypeId BuiltinContextGen::registerVoidType() {
     PracticalSemanticAnalyzer::TypeId ret;
     ret.p = LLVMVoidType();
     return ret;
 }
 
-PracticalSemanticAnalyzer::TypeId BuiltinContextGen::registerBoolType( String name ) {
+PracticalSemanticAnalyzer::TypeId BuiltinContextGen::registerBoolType() {
     PracticalSemanticAnalyzer::TypeId ret;
     ret.p = LLVMInt1Type();
     return ret;
 }
 
-PracticalSemanticAnalyzer::TypeId BuiltinContextGen::registerIntegerType(
-        String name, size_t bitSize, size_t alignment, bool _signed )
+PracticalSemanticAnalyzer::TypeId BuiltinContextGen::registerIntegerType( size_t bitSize, size_t alignment, bool _signed )
 {
     PracticalSemanticAnalyzer::TypeId ret;
     ret.p = LLVMIntType(bitSize);
     return ret;
 }
 
-PracticalSemanticAnalyzer::TypeId BuiltinContextGen::registerCharType(
-            String name, size_t bitSize, size_t alignment, bool _signed )
+PracticalSemanticAnalyzer::TypeId BuiltinContextGen::registerCharType( size_t bitSize, size_t alignment, bool _signed )
 {
-    return registerIntegerType( name, bitSize, alignment, _signed );
+    return registerIntegerType( bitSize, alignment, _signed );
 }

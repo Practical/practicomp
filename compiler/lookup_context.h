@@ -13,12 +13,10 @@
 
 class BuiltinContextGen : public PracticalSemanticAnalyzer::BuiltinContextGen {
 public:
-    virtual PracticalSemanticAnalyzer::TypeId registerVoidType( String name ) override final;
-    virtual PracticalSemanticAnalyzer::TypeId registerBoolType( String name ) override final;
-    virtual PracticalSemanticAnalyzer::TypeId registerIntegerType(
-            String name, size_t bitSize, size_t alignment, bool _signed ) override final;
-    virtual PracticalSemanticAnalyzer::TypeId registerCharType(
-            String name, size_t bitSize, size_t alignment, bool _signed ) override final;
+    virtual PracticalSemanticAnalyzer::TypeId registerVoidType() override final;
+    virtual PracticalSemanticAnalyzer::TypeId registerBoolType() override final;
+    virtual PracticalSemanticAnalyzer::TypeId registerIntegerType( size_t bitSize, size_t alignment, bool _signed ) override final;
+    virtual PracticalSemanticAnalyzer::TypeId registerCharType( size_t bitSize, size_t alignment, bool _signed ) override final;
 };
 
 #endif // LOOKUP_CONTEXT_H
