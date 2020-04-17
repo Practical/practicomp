@@ -24,7 +24,16 @@ FunctionGenImpl::~FunctionGenImpl() {
 }
 
 static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
-    abort(); // TODO implement
+    struct Visitor {
+        LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Scalar *scalar ) {
+            return static_cast<LLVMTypeRef>( scalar->getTypeId().p );
+        }
+        LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Function *function ) {
+            abort();
+        }
+    };
+
+    return std::visit( Visitor(), practiType->getType() );
 }
 
 void FunctionGenImpl::functionEnter(
