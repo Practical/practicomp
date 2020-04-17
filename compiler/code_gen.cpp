@@ -37,7 +37,7 @@ static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
 }
 
 void FunctionGenImpl::functionEnter(
-        IdentifierId id, String name, StaticType::CPtr returnType, Slice<const ArgumentDeclaration> arguments,
+        String name, StaticType::CPtr returnType, Slice<const ArgumentDeclaration> arguments,
         String file, size_t line, size_t col)
 {
     auto llvmModule = module->getLLVMModule();
@@ -61,7 +61,7 @@ void FunctionGenImpl::functionEnter(
     }
 }
 
-void FunctionGenImpl::functionLeave(IdentifierId id)
+void FunctionGenImpl::functionLeave()
 {
     // XXX Need to support "return" statement from middle of function definition
     LLVMDisposeBuilder(builder);
@@ -300,7 +300,7 @@ void ModuleGenImpl::moduleLeave(ModuleId id) {
     LLVMDisposeMessage(error);
 }
 
-std::shared_ptr<FunctionGen> ModuleGenImpl::handleFunction( IdentifierId id )
+std::shared_ptr<FunctionGen> ModuleGenImpl::handleFunction()
 {
     return std::shared_ptr<FunctionGen>( new FunctionGenImpl(this) );
 }

@@ -66,10 +66,10 @@ public:
     virtual ~FunctionGenImpl();
 
     virtual void functionEnter(
-            IdentifierId id, String name, StaticType::CPtr returnType, Slice<const ArgumentDeclaration> arguments,
+            String name, StaticType::CPtr returnType, Slice<const ArgumentDeclaration> arguments,
             String file, size_t line, size_t col) override;
 
-    virtual void functionLeave(IdentifierId id) override;
+    virtual void functionLeave() override;
 
     virtual void returnValue(ExpressionId id) override;
     virtual void returnValue() override;
@@ -131,7 +131,7 @@ public:
 
     virtual void moduleLeave(ModuleId id) override;
 
-    virtual std::shared_ptr<FunctionGen> handleFunction( IdentifierId id ) override;
+    virtual std::shared_ptr<FunctionGen> handleFunction() override;
 
     void dump() {
         assert(llvmModule != nullptr);
