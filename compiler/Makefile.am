@@ -1,7 +1,11 @@
 bin_PROGRAMS = practicomp
+noinst_PROGRAMS = practinop
+
+CPPFLAGS += -I$(top_srcdir)/external/practical-sa/include
+CXXFLAGS += $(LLVM_CXXFLAGS) -fexceptions
+LDFLAGS += -L$(top_builddir)/external/practical-sa/lib/ $(LLVM_LDFLAGS)
+LIBS += -lpractical-sa $(LLVM_LIBS) -lstdc++fs
 
 practicomp_SOURCES = main.cpp support.cpp code_gen.cpp object_output.cpp lookup_context.cpp
-practicomp_CPPFLAGS = -I$(top_srcdir)/external/practical-sa/include
-practicomp_CXXFLAGS = $(LLVM_CXXFLAGS) -fexceptions
-practicomp_LDFLAGS = -L$(top_builddir)/external/practical-sa/lib/ $(LLVM_LDFLAGS)
-practicomp_LDADD = -lpractical-sa $(LLVM_LIBS) -lstdc++fs
+
+practinop_SOURCES = main.cpp support.cpp dummy_code_gen.cpp lookup_context.cpp

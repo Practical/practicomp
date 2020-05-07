@@ -304,3 +304,8 @@ std::shared_ptr<FunctionGen> ModuleGenImpl::handleFunction()
 {
     return std::shared_ptr<FunctionGen>( new FunctionGenImpl(this) );
 }
+
+void ModuleGenImpl::dump() {
+    assert(llvmModule != nullptr);
+    LLVMDumpModule(llvmModule);
+}

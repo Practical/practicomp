@@ -133,10 +133,7 @@ public:
 
     virtual std::shared_ptr<FunctionGen> handleFunction() override;
 
-    void dump() {
-        assert(llvmModule != nullptr);
-        LLVMDumpModule(llvmModule);
-    }
+    void dump();
 };
 
 #endif // CODE_GEN_H
