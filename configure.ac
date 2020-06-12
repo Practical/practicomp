@@ -15,7 +15,7 @@ LT_INIT
 
 m4_include([m4/ax_cxx_compile_stdcxx.m4])
 
-LLVM_VERSION=7
+LLVM_VERSION=8
 
 AC_LANG(C++)
 # Checks for programs.

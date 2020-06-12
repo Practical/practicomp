@@ -1,0 +1,46 @@
+#!/usr/bin/python3
+
+import glob
+import os.path
+import subprocess
+import sys
+
+if len(sys.argv)!=3:
+    print("Wrong number of arguments. Run through \"make test\" instead", file=sys.stderr)
+    sys.exit(1)
+
+print("Running tests on directory", sys.argv[2])
+
+numFailed=0
+numPassed=0
+for resultFileName in glob.glob( os.path.join(sys.argv[2], "*.pr.res") ):
+    sourceFileName = os.path.splitext(resultFileName)[0]
+
+    testResult = subprocess.run(
+            [sys.argv[1], sourceFileName], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=False)
+
+    if testResult.returncode<0:
+        print(os.path.basename(sourceFileName), "Crashed")
+        numFailed=numFailed+1
+        continue
+
+    if testResult.returncode!=0:
+        print(os.path.basename(sourceFileName), "Compilation failed")
+        numFailed=numFailed+1
+        continue
+
+    with open(resultFileName) as resultFile:
+        expectedResult = resultFile.read()
+
+    if testResult.stdout==expectedResult:
+        print(os.path.basename(sourceFileName), "Success")
+        numPassed=numPassed+1
+    else:
+        print(os.path.basename(sourceFileName), "Wrong result")
+        numFailed=numFailed+1
+
+print()
+print(numFailed+numPassed, "tests run,", numPassed, "passed and", numFailed, "failed")
+
+if numFailed!=0:
+    exit(2)
