@@ -53,7 +53,12 @@ void FunctionGenImpl::conditionalBranch(
         ExpressionId id, StaticType::CPtr type, ExpressionId conditionExpression, JumpPointId elsePoint,
         JumpPointId continuationPoint)
 {
-    std::cout<<"    "<<id<<" "<<type<<" = condition( "<<conditionExpression<<" : false->"<<elsePoint<<", next->"<<continuationPoint<<"\n";
+    if( id!=ExpressionId() ) {
+        std::cout<<"    "<<id<<" "<<type<<" = condition( "<<conditionExpression<<" : false->"<<elsePoint<<", next->"<<
+                continuationPoint<<"\n";
+    } else {
+        std::cout<<"    condition( "<<conditionExpression<<" : false->"<<elsePoint<<", next->"<<continuationPoint<<"\n";
+    }
 }
 
 void FunctionGenImpl::setConditionClauseResult( ExpressionId id ) {

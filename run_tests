@@ -13,14 +13,16 @@ print("Running tests on directory", sys.argv[2])
 
 numFailed=0
 numPassed=0
-for resultFileName in glob.glob( os.path.join(sys.argv[2], "*.pr.res") ):
+testNames = glob.glob( os.path.join(sys.argv[2], "*.pr.res") )
+testNames.sort()
+for resultFileName in testNames:
     sourceFileName = os.path.splitext(resultFileName)[0]
 
     testResult = subprocess.run(
             [sys.argv[1], sourceFileName], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=False)
 
     if testResult.returncode<0:
-        print(os.path.basename(sourceFileName), "\033[101mCrashed\033[m")
+        print(os.path.basename(sourceFileName), "\033[41;97mCrashed\033[m")
         numFailed=numFailed+1
         continue
 
