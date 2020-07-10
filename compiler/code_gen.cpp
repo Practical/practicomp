@@ -216,6 +216,12 @@ void FunctionGenImpl::truncateInteger(
     addExpression( id, LLVMBuildTrunc(builder, lookupExpression(source), toLLVMType(destType), "") );
 }
 
+void FunctionGenImpl::changeIntegerSign(
+        ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType )
+{
+    addExpression( id, lookupExpression(source) );
+}
+
 void FunctionGenImpl::expandIntegerSigned(
         ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType )
 {

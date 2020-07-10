@@ -99,6 +99,12 @@ void FunctionGenImpl::truncateInteger(
     std::cout<<"    "<<id<<" truncate "<<source<<" : "<<sourceType<<" => "<<destType<<"\n";
 }
 
+void FunctionGenImpl::changeIntegerSign(
+        ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType )
+{
+    std::cout<<"    "<<id<<" change sign "<<source<<" : "<<sourceType<<" => "<<destType<<"\n";
+}
+
 void FunctionGenImpl::expandIntegerSigned(
         ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType )
 {

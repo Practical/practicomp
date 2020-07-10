@@ -91,6 +91,8 @@ public:
 
     virtual void truncateInteger(
             ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType ) override;
+    virtual void changeIntegerSign(
+            ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType ) override;
     virtual void expandIntegerSigned(
             ExpressionId id, ExpressionId source, StaticType::CPtr sourceType, StaticType::CPtr destType ) override;
     virtual void expandIntegerUnsigned(
