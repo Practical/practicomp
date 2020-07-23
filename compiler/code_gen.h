@@ -100,9 +100,13 @@ public:
     virtual void callFunctionDirect(
             ExpressionId id, String name, Slice<const ExpressionId> arguments, StaticType::CPtr returnType ) override;
 
-    virtual void binaryOperatorPlus(
+    virtual void binaryOperatorPlusUnsigned(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
-    virtual void binaryOperatorMinus(
+    virtual void binaryOperatorPlusSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void binaryOperatorMinusUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void binaryOperatorMinusSigned(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;

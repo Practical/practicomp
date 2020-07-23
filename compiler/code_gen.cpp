@@ -246,16 +246,28 @@ void FunctionGenImpl::callFunctionDirect(
     addExpression( id, LLVMBuildCall(builder, functionRef, llvmArguments.data(), llvmArguments.size(), "") );
 }
 
-void FunctionGenImpl::binaryOperatorPlus(
+void FunctionGenImpl::binaryOperatorPlusUnsigned(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
 {
     addExpression( id, LLVMBuildAdd(builder, lookupExpression(left), lookupExpression(right), "") );
 }
 
-void FunctionGenImpl::binaryOperatorMinus(
+void FunctionGenImpl::binaryOperatorPlusSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildNSWAdd(builder, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::binaryOperatorMinusUnsigned(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
 {
     addExpression( id, LLVMBuildSub(builder, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::binaryOperatorMinusSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildNSWSub(builder, lookupExpression(left), lookupExpression(right), "") );
 }
 
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {

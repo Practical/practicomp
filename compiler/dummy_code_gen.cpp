@@ -131,16 +131,28 @@ void FunctionGenImpl::callFunctionDirect(
     std::cout<<") : "<<returnType<<"\n";
 }
 
-void FunctionGenImpl::binaryOperatorPlus(
+void FunctionGenImpl::binaryOperatorPlusUnsigned(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
 {
-    std::cout<<"    "<<id<<" "<<left<<"+"<<right<<" : "<<resultType<<"\n";
+    std::cout<<"    "<<id<<" "<<left<<" +(U) "<<right<<" : "<<resultType<<"\n";
 }
 
-void FunctionGenImpl::binaryOperatorMinus(
+void FunctionGenImpl::binaryOperatorPlusSigned(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
 {
-    std::cout<<"    "<<id<<" "<<left<<"-"<<right<<" : "<<resultType<<"\n";
+    std::cout<<"    "<<id<<" "<<left<<" +(S) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::binaryOperatorMinusUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" -(U) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::binaryOperatorMinusSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" -(S) "<<right<<" : "<<resultType<<"\n";
 }
 
 void ModuleGenImpl::moduleEnter(
