@@ -108,6 +108,10 @@ public:
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
     virtual void binaryOperatorMinusSigned(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void binaryOperatorMultiplyUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void binaryOperatorMultiplySigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
     void addExpression( ExpressionId id, LLVMValueRef value );

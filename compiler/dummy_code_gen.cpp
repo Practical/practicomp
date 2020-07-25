@@ -155,6 +155,18 @@ void FunctionGenImpl::binaryOperatorMinusSigned(
     std::cout<<"    "<<id<<" "<<left<<" -(S) "<<right<<" : "<<resultType<<"\n";
 }
 
+void FunctionGenImpl::binaryOperatorMultiplyUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" *(U) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::binaryOperatorMultiplySigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" *(S) "<<right<<" : "<<resultType<<"\n";
+}
+
 void ModuleGenImpl::moduleEnter(
             ModuleId id,
             String name,

@@ -270,6 +270,18 @@ void FunctionGenImpl::binaryOperatorMinusSigned(
     addExpression( id, LLVMBuildNSWSub(builder, lookupExpression(left), lookupExpression(right), "") );
 }
 
+void FunctionGenImpl::binaryOperatorMultiplyUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildMul(builder, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::binaryOperatorMultiplySigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildNSWMul(builder, lookupExpression(left), lookupExpression(right), "") );
+}
+
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
     auto iter = expressionValuesTable.find(id);
     assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id
