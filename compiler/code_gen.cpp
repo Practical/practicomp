@@ -282,6 +282,18 @@ void FunctionGenImpl::binaryOperatorMultiplySigned(
     addExpression( id, LLVMBuildNSWMul(builder, lookupExpression(left), lookupExpression(right), "") );
 }
 
+void FunctionGenImpl::operatorEquals(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntEQ, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::operatorNotEquals(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntNE, lookupExpression(left), lookupExpression(right), "") );
+}
+
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
     auto iter = expressionValuesTable.find(id);
     assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id

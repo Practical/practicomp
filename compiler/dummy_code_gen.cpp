@@ -167,6 +167,18 @@ void FunctionGenImpl::binaryOperatorMultiplySigned(
     std::cout<<"    "<<id<<" "<<left<<" *(S) "<<right<<" : "<<resultType<<"\n";
 }
 
+void FunctionGenImpl::operatorEquals(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" == "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::operatorNotEquals(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" != "<<right<<" : "<<resultType<<"\n";
+}
+
 void ModuleGenImpl::moduleEnter(
             ModuleId id,
             String name,
