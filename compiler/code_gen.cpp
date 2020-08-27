@@ -282,6 +282,12 @@ void FunctionGenImpl::binaryOperatorMultiplySigned(
     addExpression( id, LLVMBuildNSWMul(builder, lookupExpression(left), lookupExpression(right), "") );
 }
 
+void FunctionGenImpl::binaryOperatorDivideUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildUDiv(builder, lookupExpression(left), lookupExpression(right), "") );
+}
+
 void FunctionGenImpl::operatorEquals(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
 {

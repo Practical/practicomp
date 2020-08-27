@@ -112,6 +112,8 @@ public:
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
     virtual void binaryOperatorMultiplySigned(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void binaryOperatorDivideUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
 
     virtual void operatorEquals(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
