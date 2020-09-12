@@ -185,6 +185,54 @@ void FunctionGenImpl::operatorNotEquals(
     std::cout<<"    "<<id<<" "<<left<<" != "<<right<<" : "<<resultType<<"\n";
 }
 
+void FunctionGenImpl::operatorLessThanUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" <(U) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::operatorLessThanSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" <(S) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::operatorLessThanOrEqualsUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" <=(U) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::operatorLessThanOrEqualsSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" <=(S) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::operatorGreaterThanUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" >(U) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::operatorGreaterThanSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" >(S) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::operatorGreaterThanOrEqualsUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" >=(U) "<<right<<" : "<<resultType<<"\n";
+}
+
+void FunctionGenImpl::operatorGreaterThanOrEqualsSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    std::cout<<"    "<<id<<" "<<left<<" >=(S) "<<right<<" : "<<resultType<<"\n";
+}
+
 void ModuleGenImpl::moduleEnter(
             ModuleId id,
             String name,

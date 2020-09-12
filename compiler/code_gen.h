@@ -119,6 +119,22 @@ public:
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
     virtual void operatorNotEquals(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void operatorLessThanUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void operatorLessThanSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void operatorLessThanOrEqualsUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void operatorLessThanOrEqualsSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void operatorGreaterThanUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void operatorGreaterThanSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void operatorGreaterThanOrEqualsUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+    virtual void operatorGreaterThanOrEqualsSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
     void addExpression( ExpressionId id, LLVMValueRef value );

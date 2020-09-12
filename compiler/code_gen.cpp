@@ -300,6 +300,54 @@ void FunctionGenImpl::operatorNotEquals(
     addExpression( id, LLVMBuildICmp(builder, LLVMIntNE, lookupExpression(left), lookupExpression(right), "") );
 }
 
+void FunctionGenImpl::operatorLessThanUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntULT, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::operatorLessThanSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntSLT, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::operatorLessThanOrEqualsUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntULE, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::operatorLessThanOrEqualsSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntSLE, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::operatorGreaterThanUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntUGT, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::operatorGreaterThanSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntSGT, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::operatorGreaterThanOrEqualsUnsigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntUGE, lookupExpression(left), lookupExpression(right), "") );
+}
+
+void FunctionGenImpl::operatorGreaterThanOrEqualsSigned(
+            ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType )
+{
+    addExpression( id, LLVMBuildICmp(builder, LLVMIntSGE, lookupExpression(left), lookupExpression(right), "") );
+}
+
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
     auto iter = expressionValuesTable.find(id);
     assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id
