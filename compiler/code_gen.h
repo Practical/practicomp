@@ -135,6 +135,9 @@ public:
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
     virtual void operatorGreaterThanOrEqualsSigned(
             ExpressionId id, ExpressionId left, ExpressionId right, StaticType::CPtr resultType ) override;
+
+
+    virtual void operatorLogicalNot( ExpressionId id, ExpressionId argument ) override;
 private:
     LLVMValueRef lookupExpression( ExpressionId id ) const;
     void addExpression( ExpressionId id, LLVMValueRef value );

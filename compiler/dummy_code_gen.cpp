@@ -233,6 +233,10 @@ void FunctionGenImpl::operatorGreaterThanOrEqualsSigned(
     std::cout<<"    "<<id<<" "<<left<<" >=(S) "<<right<<" : "<<resultType<<"\n";
 }
 
+void FunctionGenImpl::operatorLogicalNot( ExpressionId id, ExpressionId argument ) {
+    std::cout<<"    "<<id<<" ! "<<argument<<"\n";
+}
+
 void ModuleGenImpl::moduleEnter(
             ModuleId id,
             String name,

@@ -348,6 +348,10 @@ void FunctionGenImpl::operatorGreaterThanOrEqualsSigned(
     addExpression( id, LLVMBuildICmp(builder, LLVMIntSGE, lookupExpression(left), lookupExpression(right), "") );
 }
 
+void FunctionGenImpl::operatorLogicalNot( ExpressionId id, ExpressionId argument ) {
+    addExpression( id, LLVMBuildNot(builder, lookupExpression(argument), "") );
+}
+
 LLVMValueRef FunctionGenImpl::lookupExpression(ExpressionId id) const {
     auto iter = expressionValuesTable.find(id);
     assert( iter!=expressionValuesTable.end() ); // Looked up an invalid id
