@@ -9,7 +9,7 @@
 #ifndef LOOKUP_CONTEXT_H
 #define LOOKUP_CONTEXT_H
 
-#include <practical-sa.h>
+#include <practical/practical.h>
 
 class BuiltinContextGen : public PracticalSemanticAnalyzer::BuiltinContextGen {
 public:

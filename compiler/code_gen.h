@@ -10,7 +10,7 @@
 #define CODE_GEN_H
 
 #include <nocopy.h>
-#include <practical-sa.h>
+#include <practical/practical.h>
 
 #include <llvm-c/Core.h>
 

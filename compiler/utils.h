@@ -9,7 +9,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <slice.h>
+#include <practical/slice.h>
 
 #include <string>
 

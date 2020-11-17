@@ -12,8 +12,9 @@
 #include "lookup_context.h"
 #include "nocopy.h"
 #include "object_output.h"
-#include "practical-errors.h"
 #include "support.h"
+
+#include <practical/errors.h>
 
 #include <sys/types.h>
 #include <execinfo.h>
