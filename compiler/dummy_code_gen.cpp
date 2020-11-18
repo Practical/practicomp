@@ -22,7 +22,7 @@ FunctionGenImpl::~FunctionGenImpl() {
 
 void FunctionGenImpl::functionEnter(
         String name, StaticType::CPtr returnType, Slice<const ArgumentDeclaration> arguments,
-        String file, size_t line, size_t col)
+        String file, const SourceLocation &location)
 {
     std::cout<<"  Entering function "<<name<<"(";
     bool first=true;
@@ -34,7 +34,7 @@ void FunctionGenImpl::functionEnter(
         std::cout<<argument.name<<" : "<<argument.type<<" = "<<argument.lvalueId;
     }
 
-    std::cout<<") -> "<<returnType<<" at "<<file<<":"<<line<<":"<<col<<"\n";
+    std::cout<<") -> "<<returnType<<" at "<<location<<"\n";
 }
 
 void FunctionGenImpl::functionLeave() {

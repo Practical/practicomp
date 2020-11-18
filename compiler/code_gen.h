@@ -67,7 +67,7 @@ public:
 
     virtual void functionEnter(
             String name, StaticType::CPtr returnType, Slice<const ArgumentDeclaration> arguments,
-            String file, size_t line, size_t col) override;
+            String file, const SourceLocation &location) override;
 
     virtual void functionLeave() override;
 

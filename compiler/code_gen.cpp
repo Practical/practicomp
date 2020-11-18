@@ -41,7 +41,7 @@ static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
 
 void FunctionGenImpl::functionEnter(
         String name, StaticType::CPtr returnType, Slice<const ArgumentDeclaration> arguments,
-        String file, size_t line, size_t col)
+        String file, const SourceLocation &location)
 {
     auto llvmModule = module->getLLVMModule();
 

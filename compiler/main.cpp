@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
         if( ret!=0 )
             return ret;
     } catch(const compile_error &err) {
-        std::cerr<<inputFilePath.c_str()<<":"<<err.getLine()<<":"<<err.getCol()<<": error: "<<err.what()<<"\n";
+        std::cerr<<err.getLocation()<<": error: "<<err.what()<<"\n";
 
         return 1;
     }
