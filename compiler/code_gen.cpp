@@ -36,7 +36,13 @@ static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
         }
     };
 
-    return std::visit( Visitor(), practiType->getType() );
+    LLVMTypeRef ret = std::visit( Visitor(), practiType->getType() );
+
+    if( practiType->getFlags() & StaticType::Flags::Reference ) {
+        ret = LLVMPointerType( ret, 0 );
+    }
+
+    return ret;
 }
 
 void FunctionGenImpl::functionEnter(
