@@ -29,7 +29,14 @@ static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
             return static_cast<LLVMTypeRef>( scalar->getTypeId().p );
         }
         LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Function *function ) {
-            abort();
+            std::vector<LLVMTypeRef> argumentsTypes;
+            argumentsTypes.reserve(function->getNumArguments());
+
+            for( unsigned i=0; i<function->getNumArguments(); ++i ) {
+                argumentsTypes.push_back( toLLVMType(function->getArgumentType(i)) );
+            }
+
+            return LLVMFunctionType( toLLVMType(function->getReturnType()), argumentsTypes.data(), argumentsTypes.size(), false );
         }
         LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Pointer *pointer ) {
             return LLVMPointerType( toLLVMType( pointer->getPointedType() ), 0 );
@@ -51,14 +58,7 @@ void FunctionGenImpl::functionEnter(
 {
     auto llvmModule = module->getLLVMModule();
 
-    std::vector<LLVMTypeRef> argumentTypes;
-    argumentTypes.reserve(arguments.size());
-    for( auto &argDecl : arguments ) {
-        argumentTypes.emplace_back( toLLVMType(argDecl.type) );
-    }
-
-    LLVMTypeRef retType = LLVMFunctionType( toLLVMType(returnType), argumentTypes.data(), argumentTypes.size(), false );
-    llvmFunction = LLVMAddFunction( llvmModule, toStdString(name).c_str(), retType );
+    llvmFunction = LLVMGetNamedFunction( llvmModule, toStdString(name).c_str() );
 
     builder = LLVMCreateBuilder();
     addBlock();
@@ -407,6 +407,18 @@ void ModuleGenImpl::moduleLeave(ModuleId id) {
     char *error = NULL;
     LLVMVerifyModule(llvmModule, LLVMAbortProcessAction, &error);
     LLVMDisposeMessage(error);
+}
+
+void ModuleGenImpl::declareIdentifier(String name, String mangledName, StaticType::CPtr type) {
+    auto typeType = type->getType();
+    auto functionType = std::get_if< const StaticType::Function * >( &typeType );
+
+    if( functionType!=nullptr ) {
+        LLVMAddFunction( llvmModule, toStdString(mangledName).c_str(), toLLVMType( type ) );
+    } else {
+        std::cerr<<"TODO implement declare "<<name<<" "<<type<<"\n";
+        abort();
+    }
 }
 
 std::shared_ptr<FunctionGen> ModuleGenImpl::handleFunction()

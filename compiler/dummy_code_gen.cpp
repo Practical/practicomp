@@ -254,6 +254,10 @@ void ModuleGenImpl::moduleLeave(ModuleId id) {
 void ModuleGenImpl::dump() {
 }
 
+void ModuleGenImpl::declareIdentifier(String name, String mangledName, StaticType::CPtr type) {
+    std::cout<<"  Forward declare "<<name<<" \""<<mangledName<<"\" as "<<type<<"\n";
+}
+
 std::shared_ptr<FunctionGen> ModuleGenImpl::handleFunction() {
     return std::shared_ptr<FunctionGen>( new FunctionGenImpl(this) );
 }
