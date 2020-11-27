@@ -81,6 +81,26 @@ void FunctionGenImpl::setLiteral(ExpressionId id, bool value) {
     std::cout<<"    "<<id<<" Literal "<<(value ? "true" : "false" )<<" : Bool\n";
 }
 
+void FunctionGenImpl::setLiteral(ExpressionId id, String value) {
+    std::cout<<"    "<<id<<" Literal \"";
+    while( value.size() > 0 ) {
+        if( value[0]>=0x20 && value[0]<=0x7f ) {
+            // Just an ASCII printable
+            std::cout<<value[0];
+        } else if( value[0]==0 ) {
+            std::cout<<"\\0";
+        } else if( value[0]=='\n' ) {
+            std::cout<<"\\n";
+        } else  {
+            char buffer[10];
+            snprintf(buffer, 10, "\\x%02x", value[0]);
+            std::cout<<buffer;
+        }
+        value = value.subslice(1);
+    }
+    std::cout<<"\" : C8@\n";
+}
+
 void FunctionGenImpl::allocateStackVar(ExpressionId id, StaticType::CPtr type, String name) {
     std::cout<<"    "<<id<<" new var "<<name<<" : "<<type<<"\n";
 }

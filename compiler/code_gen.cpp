@@ -207,6 +207,22 @@ void FunctionGenImpl::setLiteral(ExpressionId id, bool value) {
     addExpression( id, LLVMConstInt(LLVMInt1Type(), value, true) );
 }
 
+void FunctionGenImpl::setLiteral(ExpressionId id, String value) {
+    LLVMTypeRef strType = LLVMArrayType( LLVMInt8Type(), value.size() );
+    LLVMValueRef str = LLVMAddGlobal(module->getLLVMModule(), strType, "");
+    LLVMSetInitializer(str, LLVMConstString( value.get(), value.size(), true ));
+    LLVMSetGlobalConstant(str, true);
+    LLVMSetLinkage(str, LLVMPrivateLinkage);
+    LLVMSetUnnamedAddress(str, LLVMGlobalUnnamedAddr);
+    LLVMSetAlignment(str, 1);
+
+    LLVMValueRef zeroIndex = LLVMConstInt( LLVMInt64Type(), 0, true );
+    LLVMValueRef indexes[2] = { zeroIndex, zeroIndex };
+
+    LLVMValueRef gep = LLVMBuildInBoundsGEP2(builder, strType, str, indexes, 2, "");
+    addExpression( id, gep );
+}
+
 void FunctionGenImpl::allocateStackVar(ExpressionId id, StaticType::CPtr type, String name) {
     addExpression( id, LLVMBuildAlloca(builder, toLLVMType(type), toCStr(name)) );
 }

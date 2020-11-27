@@ -84,6 +84,7 @@ public:
 
     virtual void setLiteral(ExpressionId id, LongEnoughInt value, StaticType::CPtr type) override;
     virtual void setLiteral(ExpressionId id, bool value) override;
+    virtual void setLiteral(ExpressionId id, String value) override;
 
     virtual void allocateStackVar(ExpressionId id, StaticType::CPtr type, String name) override;
     virtual void assign( ExpressionId lvalue, ExpressionId rvalue ) override;

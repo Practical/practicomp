@@ -15,7 +15,7 @@ LT_INIT
 
 m4_include([m4/ax_cxx_compile_stdcxx.m4])
 
-LLVM_VERSION=8
+LLVM_VERSION=10
 
 AC_LANG(C++)
 # Checks for programs.
@@ -34,6 +34,7 @@ test "yes" == "$LLVM_CONFIG" || AC_MSG_ERROR([Couldn't find llvm-config-$LLVM_VE
 
 # Checks for libraries.
 AC_SUBST([LLVM_CXXFLAGS], [`llvm-config-$LLVM_VERSION --cxxflags | tr ' ' '\n' | grep -v -- ^-std= | tr '\n' ' '`])
+AC_SUBST([LLVM_CPPFLAGS], [-I/usr/include/llvm-c-$LLVM_VERSION])
 AC_SUBST([LLVM_LDFLAGS], `llvm-config-$LLVM_VERSION --ldflags`)
 AC_SUBST([LLVM_LIBS], `llvm-config-$LLVM_VERSION --libs`)
 

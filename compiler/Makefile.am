@@ -1,7 +1,7 @@
 bin_PROGRAMS = practicomp
 noinst_PROGRAMS = practinop
 
-CPPFLAGS += -I$(top_srcdir)/external/practical-sa/include
+CPPFLAGS += -I$(top_srcdir)/external/practical-sa/include $(LLVM_CPPFLAGS)
 CXXFLAGS += $(LLVM_CXXFLAGS) -fexceptions
 LDFLAGS += -L$(top_builddir)/external/practical-sa/lib/ $(LLVM_LDFLAGS)
 LIBS += -lpractical-sa $(LLVM_LIBS) -lstdc++fs
