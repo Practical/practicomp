@@ -101,6 +101,10 @@ void FunctionGenImpl::setLiteral(ExpressionId id, String value) {
     std::cout<<"\" : C8@\n";
 }
 
+void FunctionGenImpl::setLiteralNull(ExpressionId id, StaticType::CPtr type) {
+    std::cout<<"    "<<id<<" Literal null : "<<type<<"\n";
+}
+
 void FunctionGenImpl::allocateStackVar(ExpressionId id, StaticType::CPtr type, String name) {
     std::cout<<"    "<<id<<" new var "<<name<<" : "<<type<<"\n";
 }

@@ -223,6 +223,10 @@ void FunctionGenImpl::setLiteral(ExpressionId id, String value) {
     addExpression( id, gep );
 }
 
+void FunctionGenImpl::setLiteralNull(ExpressionId id, StaticType::CPtr type) {
+    addExpression( id, LLVMConstNull( toLLVMType(type) ) );
+}
+
 void FunctionGenImpl::allocateStackVar(ExpressionId id, StaticType::CPtr type, String name) {
     addExpression( id, LLVMBuildAlloca(builder, toLLVMType(type), toCStr(name)) );
 }
