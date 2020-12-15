@@ -41,6 +41,9 @@ static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
         LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Pointer *pointer ) {
             return LLVMPointerType( toLLVMType( pointer->getPointedType() ), 0 );
         }
+        LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Array *array ) {
+            return LLVMArrayType( toLLVMType( array->getElementType() ), array->getNumElements() );
+        }
     };
 
     LLVMTypeRef ret = std::visit( Visitor(), practiType->getType() );
