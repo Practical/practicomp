@@ -18,9 +18,15 @@ JumpPointData::JumpPointData( Type type ) : type(type) {
 }
 
 FunctionGenImpl::~FunctionGenImpl() {
-    assert(llvmFunction==nullptr);
-    assert(currentBlock==nullptr);
-    assert(builder==nullptr);
+    if( std::uncaught_exceptions() == 0 ) {
+        assert(llvmFunction==nullptr);
+        assert(currentBlock==nullptr);
+        assert(builder==nullptr);
+    }
+
+    if( builder!=nullptr ) {
+        LLVMDisposeBuilder(builder);
+    }
 }
 
 static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
