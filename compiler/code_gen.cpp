@@ -29,8 +29,16 @@ FunctionGenImpl::~FunctionGenImpl() {
     }
 }
 
-static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
+enum class TypeUsage {
+    Expression,
+    FunctionParameter,
+    FunctionReturn,
+};
+
+static LLVMTypeRef toLLVMType(StaticType::CPtr practiType, TypeUsage type = TypeUsage::Expression) {
     struct Visitor {
+        TypeUsage type;
+
         LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Scalar *scalar ) {
             return static_cast<LLVMTypeRef>( scalar->getTypeId().p );
         }
@@ -39,20 +47,34 @@ static LLVMTypeRef toLLVMType(StaticType::CPtr practiType) {
             argumentsTypes.reserve(function->getNumArguments());
 
             for( unsigned i=0; i<function->getNumArguments(); ++i ) {
-                argumentsTypes.push_back( toLLVMType(function->getArgumentType(i)) );
+                argumentsTypes.push_back( toLLVMType(function->getArgumentType(i), TypeUsage::FunctionParameter) );
             }
 
-            return LLVMFunctionType( toLLVMType(function->getReturnType()), argumentsTypes.data(), argumentsTypes.size(), false );
+            return LLVMFunctionType(
+                    toLLVMType(function->getReturnType(), TypeUsage::FunctionReturn),
+                    argumentsTypes.data(), argumentsTypes.size(),
+                    false );
         }
         LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Pointer *pointer ) {
             return LLVMPointerType( toLLVMType( pointer->getPointedType() ), 0 );
         }
         LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Array *array ) {
-            return LLVMArrayType( toLLVMType( array->getElementType() ), array->getNumElements() );
+            LLVMTypeRef retVal = LLVMArrayType( toLLVMType( array->getElementType() ), array->getNumElements() );
+
+            switch( type ) {
+            case TypeUsage::Expression:
+                break;
+            case TypeUsage::FunctionParameter:
+            case TypeUsage::FunctionReturn:
+                retVal = LLVMPointerType( retVal, 0 );
+                break;
+            }
+
+            return retVal;
         }
     };
 
-    LLVMTypeRef ret = std::visit( Visitor(), practiType->getType() );
+    LLVMTypeRef ret = std::visit( Visitor{ .type = type }, practiType->getType() );
 
     if( practiType->getFlags() & StaticType::Flags::Reference ) {
         ret = LLVMPointerType( ret, 0 );
@@ -74,7 +96,7 @@ void FunctionGenImpl::functionEnter(
 
     // Allocate stack location for the arguments, so that they behave like lvalues
     for( size_t i = 0; i<arguments.size(); ++i ) {
-        allocateStackVar( arguments[i].lvalueId, arguments[i].type, arguments[i].name );
+        addExpression( arguments[i].lvalueId, LLVMBuildAlloca(builder, toLLVMType(arguments[i].type, TypeUsage::FunctionParameter), toCStr(name)) );
         LLVMBuildStore(builder, LLVMGetParam( llvmFunction, i ), lookupExpression(arguments[i].lvalueId));
     }
 }
