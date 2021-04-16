@@ -282,6 +282,17 @@ void ModuleGenImpl::declareIdentifier(String name, String mangledName, StaticTyp
     std::cout<<"  Forward declare "<<name<<" \""<<mangledName<<"\" as "<<type<<"\n";
 }
 
+void ModuleGenImpl::defineStruct(StaticType::CPtr strctType) {
+    auto strct = std::get<const StaticType::Struct *>( strctType->getType() );
+    std::cout<<"  Define struct "<<strct->getName()<<" {\n";
+    size_t numMembers = strct->getNumMembers();
+    for(size_t i=0; i<numMembers; ++i) {
+        StaticType::Struct::MemberDescriptor member = strct->getMember(i);
+        std::cout<<"    "<<member.name<<" : "<<member.type<<"\n";
+    }
+    std::cout<<"  }\n";
+}
+
 std::shared_ptr<FunctionGen> ModuleGenImpl::handleFunction() {
     return std::shared_ptr<FunctionGen>( new FunctionGenImpl(this) );
 }

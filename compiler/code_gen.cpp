@@ -72,6 +72,9 @@ static LLVMTypeRef toLLVMType(StaticType::CPtr practiType, TypeUsage type = Type
 
             return retVal;
         }
+        LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Struct *strct ) {
+            abort(); // TODO implement
+        }
     };
 
     LLVMTypeRef ret = std::visit( Visitor{ .type = type }, practiType->getType() );
@@ -470,6 +473,26 @@ void ModuleGenImpl::declareIdentifier(String name, String mangledName, StaticTyp
         std::cerr<<"TODO implement declare "<<name<<" "<<type<<"\n";
         abort();
     }
+}
+
+void ModuleGenImpl::defineStruct(StaticType::CPtr strctType) {
+    auto strct = std::get<const StaticType::Struct *>( strctType->getType() );
+
+    std::string name = sliceToString( strct->getName() );
+
+    LLVMTypeRef llvmStruct = LLVMStructCreateNamed( LLVMGetGlobalContext(), name.c_str() );
+
+    const size_t numMembers = strct->getNumMembers();
+
+    LLVMTypeRef structMembers[ numMembers ];
+
+    for( unsigned i=0; i<numMembers; ++i ) {
+        structMembers[i] = toLLVMType( strct->getMember(i).type );
+    }
+
+    LLVMStructSetBody(llvmStruct, structMembers, numMembers, false);
+
+    // XXX Register this new type
 }
 
 std::shared_ptr<FunctionGen> ModuleGenImpl::handleFunction()

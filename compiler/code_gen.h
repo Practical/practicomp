@@ -170,6 +170,7 @@ public:
     virtual void moduleLeave(ModuleId id) override;
 
     virtual void declareIdentifier(String name, String mangledName, StaticType::CPtr type) override;
+    virtual void defineStruct(StaticType::CPtr strct) override;
 
     virtual std::shared_ptr<FunctionGen> handleFunction() override;
 
