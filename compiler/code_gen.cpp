@@ -35,7 +35,15 @@ enum class TypeUsage {
     FunctionReturn,
 };
 
+static std::unordered_map< StaticType::CPtr, LLVMTypeRef > typesMap;
+
 static LLVMTypeRef toLLVMType(StaticType::CPtr practiType, TypeUsage type = TypeUsage::Expression) {
+    auto typeIter = typesMap.find( practiType );
+
+    if( typeIter!=typesMap.end() ) {
+        return typeIter->second;
+    }
+
     struct Visitor {
         TypeUsage type;
 
@@ -73,7 +81,8 @@ static LLVMTypeRef toLLVMType(StaticType::CPtr practiType, TypeUsage type = Type
             return retVal;
         }
         LLVMTypeRef operator()( const PracticalSemanticAnalyzer::StaticType::Struct *strct ) {
-            abort(); // TODO implement
+            std::cerr<<"Asked to convert unknown struct type to LLVM type\n";
+            abort();
         }
     };
 
@@ -84,6 +93,12 @@ static LLVMTypeRef toLLVMType(StaticType::CPtr practiType, TypeUsage type = Type
     }
 
     return ret;
+}
+
+static void registerTypeMap( StaticType::CPtr practiType, LLVMTypeRef llvmType ) {
+    auto inserter = typesMap.emplace( practiType, llvmType );
+
+    assert( inserter.second ); // type redefined
 }
 
 void FunctionGenImpl::functionEnter(
@@ -492,7 +507,7 @@ void ModuleGenImpl::defineStruct(StaticType::CPtr strctType) {
 
     LLVMStructSetBody(llvmStruct, structMembers, numMembers, false);
 
-    // XXX Register this new type
+    registerTypeMap( strctType, llvmStruct );
 }
 
 std::shared_ptr<FunctionGen> ModuleGenImpl::handleFunction()
