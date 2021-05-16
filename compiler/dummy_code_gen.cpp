@@ -282,6 +282,10 @@ void ModuleGenImpl::declareIdentifier(String name, String mangledName, StaticTyp
     std::cout<<"  Forward declare "<<name<<" \""<<mangledName<<"\" as "<<type<<"\n";
 }
 
+void ModuleGenImpl::declareStruct(StaticType::CPtr structType) {
+    std::cout<<"  Forward declare struct "<<structType<<"\n";
+}
+
 void ModuleGenImpl::defineStruct(StaticType::CPtr strctType) {
     auto strct = std::get<const StaticType::Struct *>( strctType->getType() );
     std::cout<<"  Define struct "<<strct->getName()<<" {\n";
