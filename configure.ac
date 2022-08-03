@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-AC_PREREQ([2.69])
-AC_INIT([The Practical Programming Language Compiler], [0.0], [shachar@shemesh.biz])
+AC_PREREQ([2.71])
+AC_INIT([The Practical Programming Language Compiler],[0.0],[shachar@shemesh.biz])
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
@@ -15,7 +15,7 @@ LT_INIT
 
 m4_include([m4/ax_cxx_compile_stdcxx.m4])
 
-LLVM_VERSION=10
+LLVM_VERSION=14
 
 AC_LANG(C++)
 # Checks for programs.
@@ -39,7 +39,6 @@ AC_SUBST([LLVM_LDFLAGS], `llvm-config-$LLVM_VERSION --ldflags`)
 AC_SUBST([LLVM_LIBS], `llvm-config-$LLVM_VERSION --libs`)
 
 # Checks for header files.
-AC_CHECK_HEADER_STDBOOL
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
